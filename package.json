@@ -11,9 +11,7 @@
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:client": "npm run dev -w src/client",
     "dev:server": "npm run dev -w src/server",
-    "build": "npm run build --workspaces",
-    "db:migrate": "npm run db:migrate -w src/server",
-    "db:push": "npm run db:push -w src/server"
+    "build": "npm run build --workspaces"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
