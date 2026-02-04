@@ -1,0 +1,21 @@
+{
+  "name": "champion-forge",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "src/client",
+    "src/server",
+    "src/shared"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:client": "npm run dev -w src/client",
+    "dev:server": "npm run dev -w src/server",
+    "build": "npm run build --workspaces",
+    "db:migrate": "npm run db:migrate -w src/server",
+    "db:push": "npm run db:push -w src/server"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

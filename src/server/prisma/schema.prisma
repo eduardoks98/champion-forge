@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  gameUserId    String   @unique @map("game_user_id")
+  email         String
+  username      String
+  nickname      String
+  avatarUrl     String?  @map("avatar_url")
+
+  // Ranking
+  tier          String   @default("Bronze")
+  division      Int?     @default(4)
+  lp            Int      @default(0)
+  mmr           Int      @default(0)
+
+  // Stats
+  gamesPlayed   Int      @default(0) @map("games_played")
+  gamesWon      Int      @default(0) @map("games_won")
+  totalXp       Int      @default(0) @map("total_xp")
+
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Game {
+  id          String   @id @default(uuid())
+  roomCode    String   @unique @map("room_code")
+  status      String   @default("WAITING")
+  winnerId    String?  @map("winner_id")
+  gameState   Json?    @map("game_state")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("games")
+}

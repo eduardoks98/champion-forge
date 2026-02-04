@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Champion Forge - Animation Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(255, 165, 0, 0.5);
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab:hover, .tab.active {
+            background: rgba(255, 165, 0, 0.3);
+            border-color: orange;
+        }
+
+        .content {
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        /* Arena Section */
+        .arena {
+            position: relative;
+            width: 800px;
+            height: 500px;
+            margin: 0 auto 30px;
+            background: radial-gradient(circle, #2a2a4a 0%, #1a1a2e 100%);
+            border: 4px solid #4a4a6a;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        /* Player Character */
+        .player {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: #3498db;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.1s;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
+        }
+
+        .player.attacking {
+            animation: attack 0.3s ease-out;
+        }
+
+        .player.damaged {
+            animation: damage 0.2s ease-out;
+        }
+
+        .player-weapon {
+            position: absolute;
+            width: 40px;
+            height: 8px;
+            background: #e67e22;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%) rotate(0deg);
+            transform-origin: left center;
+            border-radius: 2px;
+            transition: transform 0.1s;
+        }
+
+        @keyframes attack {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes damage {
+            0% { background: #3498db; }
+            50% { background: #e74c3c; }
+            100% { background: #3498db; }
+        }
+
+        @keyframes weapon-swing {
+            0% { transform: translateY(-50%) rotate(0deg); }
+            50% { transform: translateY(-50%) rotate(90deg); }
+            100% { transform: translateY(-50%) rotate(0deg); }
+        }
+
+        /* Enemy */
+        .enemy {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: #e74c3c;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
+        }
+
+        .enemy.hit {
+            animation: enemyHit 0.3s ease-out;
+        }
+
+        @keyframes enemyHit {
+            0% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(0.8); filter: brightness(2); }
+            100% { transform: scale(1); filter: brightness(1); }
+        }
+
+        /* Projectiles */
+        .projectile {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #f39c12;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #f39c12;
+        }
+
+        .projectile.fireball {
+            background: radial-gradient(circle, #ff6b00, #ff0000);
+            animation: fireball-pulse 0.2s infinite;
+        }
+
+        @keyframes fireball-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .projectile.ice {
+            background: radial-gradient(circle, #00d9ff, #0066ff);
+        }
+
+        .projectile.lightning {
+            background: radial-gradient(circle, #fff, #ffff00);
+            animation: lightning-flash 0.1s infinite;
+        }
+
+        @keyframes lightning-flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Skills Section */
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .skill-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+            border-color: orange;
+            box-shadow: 0 10px 30px rgba(255, 165, 0, 0.3);
+        }
+
+        .skill-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 10px;
+            filter: invert(1);
+        }
+
+        .skill-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .skill-type {
+            font-size: 12px;
+            color: #888;
+        }
+
+        /* Weapons Gallery */
+        .weapons-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .weapon-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .weapon-card:hover {
+            border-color: #e67e22;
+            box-shadow: 0 0 20px rgba(230, 126, 34, 0.3);
+        }
+
+        .weapon-card.selected {
+            border-color: #27ae60;
+            background: rgba(39, 174, 96, 0.2);
+        }
+
+        .weapon-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 8px;
+            filter: invert(1);
+        }
+
+        .weapon-name {
+            font-size: 12px;
+        }
+
+        /* Effect particles */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .particle.spark {
+            width: 4px;
+            height: 4px;
+            background: #f39c12;
+            border-radius: 50%;
+        }
+
+        .particle.blood {
+            width: 6px;
+            height: 6px;
+            background: #e74c3c;
+            border-radius: 50%;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(230, 126, 34, 0.5);
+        }
+
+        button.secondary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+
+        /* Health Bar */
+        .health-bar {
+            width: 100%;
+            height: 8px;
+            background: #333;
+            border-radius: 4px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            transition: width 0.3s;
+        }
+
+        /* Cooldown indicator */
+        .cooldown {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: #f39c12;
+        }
+
+        /* Stats panel */
+        .stats-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        /* Animation preview */
+        .animation-preview {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .preview-box {
+            width: 150px;
+            height: 150px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .preview-label {
+            position: absolute;
+            bottom: -25px;
+            text-align: center;
+            width: 100%;
+            font-size: 12px;
+        }
+
+        /* Dash animation */
+        .dash-effect {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(52, 152, 219, 0.3);
+            animation: dash-trail 0.3s ease-out forwards;
+        }
+
+        @keyframes dash-trail {
+            0% { opacity: 0.5; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.5); }
+        }
+
+        /* AOE effect */
+        .aoe-effect {
+            position: absolute;
+            border-radius: 50%;
+            border: 3px solid;
+            animation: aoe-expand 0.5s ease-out forwards;
+        }
+
+        @keyframes aoe-expand {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(1); opacity: 0; }
+        }
+
+        /* CC indicators */
+        .cc-indicator {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            animation: cc-float 1s ease-out forwards;
+        }
+
+        .cc-indicator.stun { background: #f1c40f; color: #000; }
+        .cc-indicator.slow { background: #3498db; }
+        .cc-indicator.root { background: #27ae60; }
+
+        @keyframes cc-float {
+            0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-30px); }
+        }
+
+        /* Damage numbers */
+        .damage-number {
+            position: absolute;
+            font-weight: bold;
+            font-size: 18px;
+            animation: damage-float 0.8s ease-out forwards;
+            pointer-events: none;
+        }
+
+        .damage-number.physical { color: #fff; }
+        .damage-number.magic { color: #9b59b6; }
+        .damage-number.crit { color: #e74c3c; font-size: 24px; }
+        .damage-number.heal { color: #2ecc71; }
+
+        @keyframes damage-float {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.2); }
+            100% { opacity: 0; transform: translateY(-50px) scale(0.8); }
+        }
+
+        /* Info section */
+        .info-section {
+            max-width: 800px;
+            margin: 30px auto;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .info-section h3 {
+            margin-bottom: 15px;
+            color: #f39c12;
+        }
+
+        .info-section ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+
+        .info-section li {
+            margin-bottom: 8px;
+        }
+
+        .info-section li::before {
+            content: "▸ ";
+            color: #f39c12;
+        }
+    </style>
+</head>
+<body>
+    <h1>⚔️ Champion Forge - Animation Test ⚔️</h1>
+
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('arena')">Arena Combat</div>
+        <div class="tab" onclick="showTab('skills')">Skills Gallery</div>
+        <div class="tab" onclick="showTab('weapons')">Weapons</div>
+        <div class="tab" onclick="showTab('animations')">Animation Preview</div>
+    </div>
+
+    <!-- Arena Tab -->
+    <div id="arena" class="content active">
+        <div class="controls">
+            <button onclick="playerAttack()">⚔️ Attack (Click)</button>
+            <button onclick="castFireball()" class="secondary">🔥 Fireball (Q)</button>
+            <button onclick="castIceSpear()" class="secondary">❄️ Ice Spear (W)</button>
+            <button onclick="castLightning()" class="secondary">⚡ Lightning (E)</button>
+            <button onclick="playerDash()">💨 Dash (Space)</button>
+            <button onclick="spawnEnemy()">👾 Spawn Enemy</button>
+            <button onclick="resetArena()">🔄 Reset</button>
+        </div>
+
+        <div class="arena" id="arena-container">
+            <div class="player" id="player" style="left: 100px; top: 200px;">
+                <div class="player-weapon" id="player-weapon"></div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>Controles</h3>
+            <ul>
+                <li><strong>Mouse:</strong> Clique na arena para mover o jogador</li>
+                <li><strong>Attack:</strong> Ataque melee com animação de swing</li>
+                <li><strong>Fireball:</strong> Projétil de fogo com trail</li>
+                <li><strong>Ice Spear:</strong> Projétil de gelo que atravessa</li>
+                <li><strong>Lightning:</strong> Dano instantâneo em área</li>
+                <li><strong>Dash:</strong> Movimento rápido com ghost trail</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Skills Tab -->
+    <div id="skills" class="content">
+        <div class="skills-container" id="skills-container">
+            <!-- Skills will be loaded dynamically -->
+        </div>
+    </div>
+
+    <!-- Weapons Tab -->
+    <div id="weapons" class="content">
+        <div class="weapons-container" id="weapons-container">
+            <!-- Weapons will be loaded dynamically -->
+        </div>
+    </div>
+
+    <!-- Animations Tab -->
+    <div id="animations" class="content">
+        <h2 style="text-align: center; margin-bottom: 20px;">Animation Preview</h2>
+
+        <div class="animation-preview">
+            <div class="preview-box" id="preview-attack">
+                <div class="player" style="position: relative;">
+                    <div class="player-weapon"></div>
+                </div>
+                <span class="preview-label">Melee Attack</span>
+            </div>
+
+            <div class="preview-box" id="preview-fireball">
+                <div class="projectile fireball" style="position: relative;"></div>
+                <span class="preview-label">Fireball</span>
+            </div>
+
+            <div class="preview-box" id="preview-ice">
+                <div class="projectile ice" style="position: relative;"></div>
+                <span class="preview-label">Ice Spear</span>
+            </div>
+
+            <div class="preview-box" id="preview-lightning">
+                <div class="projectile lightning" style="position: relative;"></div>
+                <span class="preview-label">Lightning</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button onclick="playAllAnimations()">▶️ Play All Animations</button>
+            <button onclick="playAttackAnim()">⚔️ Attack</button>
+            <button onclick="playDamageAnim()">💥 Damage</button>
+            <button onclick="playHealAnim()">💚 Heal</button>
+            <button onclick="playCritAnim()">⭐ Critical Hit</button>
+        </div>
+
+        <div class="info-section">
+            <h3>Tipos de Animação</h3>
+            <ul>
+                <li><strong>Attack Swing:</strong> Rotação da arma (0° → 90° → 0°)</li>
+                <li><strong>Projectile Trail:</strong> Partículas seguindo o projétil</li>
+                <li><strong>AOE Expand:</strong> Círculo que expande e desaparece</li>
+                <li><strong>Dash Ghost:</strong> Cópias transparentes do personagem</li>
+                <li><strong>Hit Flash:</strong> Flash branco/vermelho no impacto</li>
+                <li><strong>Damage Float:</strong> Números flutuando para cima</li>
+                <li><strong>CC Indicator:</strong> Ícones de stun/slow/root</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="stats-panel">
+        <div class="stat-row">
+            <span>FPS:</span>
+            <span id="fps">60</span>
+        </div>
+        <div class="stat-row">
+            <span>Entities:</span>
+            <span id="entities">1</span>
+        </div>
+        <div class="stat-row">
+            <span>Particles:</span>
+            <span id="particles">0</span>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        let player = { x: 100, y: 200, hp: 100, maxHp: 100 };
+        let enemies = [];
+        let projectiles = [];
+        let particles = [];
+        let entityCount = 1;
+        let particleCount = 0;
+
+        // Tab switching
+        function showTab(tabName) {
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabName === 'skills') loadSkills();
+            if (tabName === 'weapons') loadWeapons();
+        }
+
+        // Arena click to move
+        document.getElementById('arena-container').addEventListener('click', (e) => {
+            const rect = e.target.getBoundingClientRect();
+            if (e.target.id === 'arena-container') {
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                movePlayer(x - 30, y - 30);
+            }
+        });
+
+        function movePlayer(x, y) {
+            const playerEl = document.getElementById('player');
+            player.x = Math.max(0, Math.min(740, x));
+            player.y = Math.max(0, Math.min(440, y));
+            playerEl.style.left = player.x + 'px';
+            playerEl.style.top = player.y + 'px';
+        }
+
+        // Attack animation
+        function playerAttack() {
+            const playerEl = document.getElementById('player');
+            const weaponEl = document.getElementById('player-weapon');
+
+            playerEl.classList.add('attacking');
+            weaponEl.style.animation = 'weapon-swing 0.3s ease-out';
+
+            // Check hit on enemies
+            enemies.forEach((enemy, index) => {
+                const dist = Math.hypot(enemy.x - player.x, enemy.y - player.y);
+                if (dist < 100) {
+                    hitEnemy(index, 25);
+                }
+            });
+
+            setTimeout(() => {
+                playerEl.classList.remove('attacking');
+                weaponEl.style.animation = '';
+            }, 300);
+        }
+
+        // Fireball spell
+        function castFireball() {
+            const proj = document.createElement('div');
+            proj.className = 'projectile fireball';
+            proj.style.left = (player.x + 30) + 'px';
+            proj.style.top = (player.y + 22) + 'px';
+            document.getElementById('arena-container').appendChild(proj);
+
+            const direction = { x: 5, y: 0 };
+            projectiles.push({ element: proj, x: player.x + 30, y: player.y + 22, dx: direction.x, dy: direction.y, type: 'fire' });
+            entityCount++;
+            updateStats();
+        }
+
+        // Ice Spear spell
+        function castIceSpear() {
+            const proj = document.createElement('div');
+            proj.className = 'projectile ice';
+            proj.style.left = (player.x + 30) + 'px';
+            proj.style.top = (player.y + 22) + 'px';
+            document.getElementById('arena-container').appendChild(proj);
+
+            projectiles.push({ element: proj, x: player.x + 30, y: player.y + 22, dx: 7, dy: 0, type: 'ice', pierce: true });
+            entityCount++;
+            updateStats();
+        }
+
+        // Lightning spell
+        function castLightning() {
+            // Find nearest enemy
+            let nearest = null;
+            let minDist = Infinity;
+            enemies.forEach((enemy, index) => {
+                const dist = Math.hypot(enemy.x - player.x, enemy.y - player.y);
+                if (dist < minDist && dist < 300) {
+                    minDist = dist;
+                    nearest = index;
+                }
+            });
+
+            if (nearest !== null) {
+                const enemy = enemies[nearest];
+                // Create lightning effect
+                const lightning = document.createElement('div');
+                lightning.className = 'aoe-effect';
+                lightning.style.left = enemy.x + 'px';
+                lightning.style.top = enemy.y + 'px';
+                lightning.style.width = '100px';
+                lightning.style.height = '100px';
+                lightning.style.marginLeft = '-25px';
+                lightning.style.marginTop = '-25px';
+                lightning.style.borderColor = '#f1c40f';
+                document.getElementById('arena-container').appendChild(lightning);
+
+                hitEnemy(nearest, 40);
+                showDamageNumber(enemy.x + 25, enemy.y, 40, 'magic');
+
+                setTimeout(() => lightning.remove(), 500);
+            }
+        }
+
+        // Dash ability
+        function playerDash() {
+            const dashDistance = 150;
+            const ghostCount = 5;
+            const startX = player.x;
+            const startY = player.y;
+            const endX = Math.min(740, player.x + dashDistance);
+
+            // Create ghost trails
+            for (let i = 0; i < ghostCount; i++) {
+                setTimeout(() => {
+                    const ghost = document.createElement('div');
+                    ghost.className = 'dash-effect';
+                    ghost.style.left = (startX + (endX - startX) * (i / ghostCount)) + 'px';
+                    ghost.style.top = startY + 'px';
+                    document.getElementById('arena-container').appendChild(ghost);
+                    setTimeout(() => ghost.remove(), 300);
+                }, i * 30);
+            }
+
+            // Move player
+            setTimeout(() => movePlayer(endX, startY), 100);
+        }
+
+        // Spawn enemy
+        function spawnEnemy() {
+            const enemy = document.createElement('div');
+            enemy.className = 'enemy';
+            enemy.id = 'enemy-' + enemies.length;
+            const x = 600 + Math.random() * 150;
+            const y = 100 + Math.random() * 300;
+            enemy.style.left = x + 'px';
+            enemy.style.top = y + 'px';
+            enemy.innerHTML = '<div class="health-bar"><div class="health-fill" style="width: 100%"></div></div>';
+            document.getElementById('arena-container').appendChild(enemy);
+            enemies.push({ element: enemy, x, y, hp: 100, maxHp: 100 });
+            entityCount++;
+            updateStats();
+        }
+
+        // Hit enemy
+        function hitEnemy(index, damage) {
+            const enemy = enemies[index];
+            if (!enemy) return;
+
+            enemy.hp -= damage;
+            enemy.element.classList.add('hit');
+
+            // Update health bar
+            const healthFill = enemy.element.querySelector('.health-fill');
+            healthFill.style.width = Math.max(0, (enemy.hp / enemy.maxHp) * 100) + '%';
+
+            // Show damage number
+            showDamageNumber(enemy.x + 25, enemy.y, damage, 'physical');
+
+            setTimeout(() => enemy.element.classList.remove('hit'), 300);
+
+            // Check death
+            if (enemy.hp <= 0) {
+                enemy.element.remove();
+                enemies.splice(index, 1);
+                entityCount--;
+                updateStats();
+                createDeathParticles(enemy.x + 25, enemy.y + 25);
+            }
+        }
+
+        // Damage numbers
+        function showDamageNumber(x, y, amount, type) {
+            const dmg = document.createElement('div');
+            dmg.className = 'damage-number ' + type;
+            dmg.textContent = '-' + amount;
+            dmg.style.left = x + 'px';
+            dmg.style.top = y + 'px';
+            document.getElementById('arena-container').appendChild(dmg);
+            setTimeout(() => dmg.remove(), 800);
+        }
+
+        // Death particles
+        function createDeathParticles(x, y) {
+            for (let i = 0; i < 10; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle blood';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                document.getElementById('arena-container').appendChild(particle);
+
+                const angle = (Math.PI * 2 / 10) * i;
+                const speed = 2 + Math.random() * 3;
+                const dx = Math.cos(angle) * speed;
+                const dy = Math.sin(angle) * speed;
+
+                particles.push({ element: particle, x, y, dx, dy, life: 30 });
+                particleCount++;
+            }
+            updateStats();
+        }
+
+        // Game loop
+        function gameLoop() {
+            // Update projectiles
+            projectiles.forEach((proj, index) => {
+                proj.x += proj.dx;
+                proj.y += proj.dy;
+                proj.element.style.left = proj.x + 'px';
+                proj.element.style.top = proj.y + 'px';
+
+                // Check collision with enemies
+                enemies.forEach((enemy, enemyIndex) => {
+                    const dist = Math.hypot(enemy.x + 25 - proj.x, enemy.y + 25 - proj.y);
+                    if (dist < 40) {
+                        hitEnemy(enemyIndex, proj.type === 'fire' ? 35 : 25);
+                        if (!proj.pierce) {
+                            proj.element.remove();
+                            projectiles.splice(index, 1);
+                            entityCount--;
+                        }
+                    }
+                });
+
+                // Remove if out of bounds
+                if (proj.x > 800 || proj.x < 0 || proj.y > 500 || proj.y < 0) {
+                    proj.element.remove();
+                    projectiles.splice(index, 1);
+                    entityCount--;
+                }
+            });
+
+            // Update particles
+            particles.forEach((p, index) => {
+                p.x += p.dx;
+                p.y += p.dy;
+                p.dy += 0.1; // gravity
+                p.life--;
+                p.element.style.left = p.x + 'px';
+                p.element.style.top = p.y + 'px';
+                p.element.style.opacity = p.life / 30;
+
+                if (p.life <= 0) {
+                    p.element.remove();
+                    particles.splice(index, 1);
+                    particleCount--;
+                }
+            });
+
+            updateStats();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function updateStats() {
+            document.getElementById('entities').textContent = entityCount + enemies.length;
+            document.getElementById('particles').textContent = particles.length;
+        }
+
+        function resetArena() {
+            enemies.forEach(e => e.element.remove());
+            projectiles.forEach(p => p.element.remove());
+            particles.forEach(p => p.element.remove());
+            enemies = [];
+            projectiles = [];
+            particles = [];
+            entityCount = 1;
+            particleCount = 0;
+            movePlayer(100, 200);
+            updateStats();
+        }
+
+        // Load skills gallery
+        function loadSkills() {
+            const container = document.getElementById('skills-container');
+            const skills = [
+                { name: 'Fireball', type: 'Damage', icon: 'icons/abilities/fire-meteor.svg' },
+                { name: 'Ice Spear', type: 'Damage', icon: 'icons/abilities/ice-spear.svg' },
+                { name: 'Lightning Arc', type: 'Damage', icon: 'icons/abilities/lightning-arc.svg' },
+                { name: 'Heal', type: 'Support', icon: 'icons/abilities/heal-basic.svg' },
+                { name: 'Energy Shield', type: 'Defense', icon: 'icons/abilities/shield-energy.svg' },
+                { name: 'Arrow Cluster', type: 'Damage', icon: 'icons/abilities/arrow-cluster.svg' },
+                { name: 'Explosion', type: 'Damage', icon: 'icons/abilities/explosion-bright.svg' },
+                { name: 'Aura', type: 'Buff', icon: 'icons/abilities/aura-basic.svg' },
+                { name: 'Fire Spell', type: 'Damage', icon: 'icons/abilities/fire-spell.svg' },
+                { name: 'Ice Spell', type: 'Damage', icon: 'icons/abilities/ice-spell.svg' },
+                { name: 'Lightning Spell', type: 'Damage', icon: 'icons/abilities/lightning-spell.svg' },
+                { name: 'Wave', type: 'Damage', icon: 'icons/abilities/wave-big.svg' },
+            ];
+
+            container.innerHTML = skills.map(skill => `
+                <div class="skill-card" onclick="previewSkill('${skill.name}')">
+                    <img src="${skill.icon}" class="skill-icon" alt="${skill.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2250%25%22 x=%2250%25%22 text-anchor=%22middle%22 font-size=%2250%22>⚡</text></svg>'">
+                    <div class="skill-name">${skill.name}</div>
+                    <div class="skill-type">${skill.type}</div>
+                </div>
+            `).join('');
+        }
+
+        // Load weapons gallery
+        function loadWeapons() {
+            const container = document.getElementById('weapons-container');
+            const weapons = [
+                { name: 'Long Sword', icon: 'icons/weapons/sword-long.svg' },
+                { name: 'Short Sword', icon: 'icons/weapons/sword-short.svg' },
+                { name: 'Battle Axe', icon: 'icons/weapons/axe-battle.svg' },
+                { name: 'War Hammer', icon: 'icons/weapons/hammer-war.svg' },
+                { name: 'Spear', icon: 'icons/weapons/spear-barbed.svg' },
+                { name: 'Dagger', icon: 'icons/weapons/dagger-plain.svg' },
+                { name: 'Dual Daggers', icon: 'icons/weapons/daggers-dual.svg' },
+                { name: 'Mace', icon: 'icons/weapons/mace-spiked.svg' },
+                { name: 'Bow', icon: 'icons/weapons/bow-short.svg' },
+                { name: 'Crossbow', icon: 'icons/weapons/crossbow.svg' },
+                { name: 'Staff', icon: 'icons/weapons/staff-crescent.svg' },
+                { name: 'Energy Sword', icon: 'icons/weapons/sword-energy.svg' },
+                { name: 'Rune Sword', icon: 'icons/weapons/sword-rune.svg' },
+                { name: 'Fire Axe', icon: 'icons/weapons/axe-fire.svg' },
+                { name: 'Ice Spear', icon: 'icons/weapons/spear-ice.svg' },
+            ];
+
+            container.innerHTML = weapons.map((weapon, index) => `
+                <div class="weapon-card" onclick="selectWeapon(${index}, this)">
+                    <img src="${weapon.icon}" class="weapon-icon" alt="${weapon.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2250%25%22 x=%2250%25%22 text-anchor=%22middle%22 font-size=%2250%22>⚔️</text></svg>'">
+                    <div class="weapon-name">${weapon.name}</div>
+                </div>
+            `).join('');
+        }
+
+        function selectWeapon(index, element) {
+            document.querySelectorAll('.weapon-card').forEach(w => w.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function previewSkill(name) {
+            alert(`Skill: ${name}\nClique na arena para testar!`);
+            showTab('arena');
+        }
+
+        // Animation preview functions
+        function playAllAnimations() {
+            playAttackAnim();
+            setTimeout(playDamageAnim, 500);
+            setTimeout(playHealAnim, 1000);
+            setTimeout(playCritAnim, 1500);
+        }
+
+        function playAttackAnim() {
+            const box = document.getElementById('preview-attack');
+            const player = box.querySelector('.player');
+            const weapon = box.querySelector('.player-weapon');
+
+            player.classList.add('attacking');
+            weapon.style.animation = 'weapon-swing 0.3s ease-out';
+
+            setTimeout(() => {
+                player.classList.remove('attacking');
+                weapon.style.animation = '';
+            }, 300);
+        }
+
+        function playDamageAnim() {
+            const box = document.getElementById('preview-attack');
+            const player = box.querySelector('.player');
+            player.classList.add('damaged');
+            setTimeout(() => player.classList.remove('damaged'), 200);
+        }
+
+        function playHealAnim() {
+            const box = document.getElementById('preview-attack');
+            const dmg = document.createElement('div');
+            dmg.className = 'damage-number heal';
+            dmg.textContent = '+50';
+            dmg.style.left = '50%';
+            dmg.style.top = '50%';
+            box.appendChild(dmg);
+            setTimeout(() => dmg.remove(), 800);
+        }
+
+        function playCritAnim() {
+            const box = document.getElementById('preview-attack');
+            const dmg = document.createElement('div');
+            dmg.className = 'damage-number crit';
+            dmg.textContent = 'CRIT! -150';
+            dmg.style.left = '50%';
+            dmg.style.top = '50%';
+            box.appendChild(dmg);
+            setTimeout(() => dmg.remove(), 800);
+        }
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('arena').classList.contains('active')) {
+                switch(e.key.toLowerCase()) {
+                    case ' ': e.preventDefault(); playerDash(); break;
+                    case 'q': castFireball(); break;
+                    case 'w': castIceSpear(); break;
+                    case 'e': castLightning(); break;
+                }
+            }
+        });
+
+        // FPS counter
+        let lastTime = performance.now();
+        let frameCount = 0;
+        function updateFPS() {
+            frameCount++;
+            const now = performance.now();
+            if (now - lastTime >= 1000) {
+                document.getElementById('fps').textContent = frameCount;
+                frameCount = 0;
+                lastTime = now;
+            }
+            requestAnimationFrame(updateFPS);
+        }
+
+        // Initialize
+        gameLoop();
+        updateFPS();
+        spawnEnemy();
+        spawnEnemy();
+        spawnEnemy();
+    </script>
+</body>
+</html>
