@@ -1,19 +1,40 @@
-import type { BaseGameState, BasePlayer } from '@mysys/game-sdk-shared';
+// Base types for Champion Forge
 
-// Estenda os tipos base para seu jogo
+export interface BaseGameState {
+  roomCode: string;
+  status: 'WAITING' | 'PLAYING' | 'FINISHED';
+  players: BasePlayer[];
+}
+
+export interface BasePlayer {
+  id: string;
+  name: string;
+  isReady: boolean;
+}
+
+// Champion Forge specific types
 export interface CHAMPGameState extends BaseGameState {
-  // TODO: Adicionar campos específicos do jogo
+  // TODO: Adicionar campos especificos do jogo
+  arenaId?: string;
+  round?: number;
 }
 
 export interface CHAMPPlayer extends BasePlayer {
-  // TODO: Adicionar campos específicos do jogador
+  // TODO: Adicionar campos especificos do jogador
+  characterId?: string;
+  team?: 'blue' | 'red';
 }
 
-// Eventos Socket.IO específicos do jogo
+// Socket.IO events
 export interface CHAMPClientEvents {
-  // TODO: Adicionar eventos do cliente
+  createRoom: (data: { mode: string }) => void;
+  joinRoom: (data: { roomCode: string }) => void;
+  gameAction: (data: { action: string; payload: unknown }) => void;
 }
 
 export interface CHAMPServerEvents {
-  // TODO: Adicionar eventos do servidor
+  roomCreated: (data: { roomCode: string }) => void;
+  roomJoined: (data: { roomCode: string; players: CHAMPPlayer[] }) => void;
+  gameStateUpdate: (state: CHAMPGameState) => void;
+  error: (data: { code: string; message: string }) => void;
 }
