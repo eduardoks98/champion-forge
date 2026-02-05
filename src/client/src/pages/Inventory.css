@@ -1,0 +1,347 @@
+/* Inventory Page */
+.inventory {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f1a30 100%);
+  color: #fff;
+}
+
+.inventory__content {
+  padding: 100px 20px 40px;
+}
+
+.inventory__container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Header */
+.inventory__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.inventory__title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #c8aa6e;
+  margin: 0;
+}
+
+.inventory__back-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.inventory__back-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.inventory__debug-btn {
+  background: rgba(200, 170, 110, 0.2);
+  border: 1px solid #c8aa6e;
+  color: #c8aa6e;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+
+.inventory__debug-btn:hover {
+  background: rgba(200, 170, 110, 0.3);
+}
+
+/* Grid Layout */
+.inventory__grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+@media (max-width: 768px) {
+  .inventory__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Sections */
+.inventory__section {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(200, 170, 110, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.inventory__section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #c8aa6e;
+  margin: 0 0 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(200, 170, 110, 0.2);
+}
+
+/* Weapon Card */
+.inventory__weapon-card {
+  background: linear-gradient(145deg, #1a1a2e 0%, #0d0d1a 100%);
+  border: 2px solid #3d3d5c;
+  border-radius: 10px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.inventory__weapon-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(200, 170, 110, 0.2);
+}
+
+.inventory__weapon-icon {
+  font-size: 2.5rem;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+}
+
+.inventory__weapon-info {
+  flex: 1;
+}
+
+.inventory__weapon-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.inventory__weapon-stats {
+  display: flex;
+  gap: 15px;
+  font-size: 0.8rem;
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.inventory__weapon-desc {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.inventory__weapon-passive,
+.inventory__weapon-active {
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.inventory__weapon-passive-label,
+.inventory__weapon-active-label {
+  color: #c8aa6e;
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+.inventory__weapon-active-label {
+  color: #9b59b6;
+}
+
+.inventory__weapon-change {
+  background: rgba(200, 170, 110, 0.2);
+  color: #c8aa6e;
+  padding: 8px 15px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* Section Title - Passive */
+.inventory__section-title--passive {
+  margin-top: 25px;
+}
+
+/* Passive Card */
+.inventory__passive-card {
+  background: linear-gradient(145deg, #1a1a2e 0%, #0d0d1a 100%);
+  border: 2px solid #9b59b6;
+  border-radius: 10px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: relative;
+}
+
+.inventory__passive-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(155, 89, 182, 0.3);
+}
+
+.inventory__passive-slot-key {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #9b59b6;
+  background: rgba(155, 89, 182, 0.2);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.inventory__passive-icon {
+  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(155, 89, 182, 0.15);
+  border-radius: 8px;
+}
+
+.inventory__passive-info {
+  flex: 1;
+}
+
+.inventory__passive-name {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.inventory__passive-desc {
+  font-size: 0.85rem;
+  color: #888;
+  line-height: 1.4;
+}
+
+.inventory__passive-hint {
+  font-size: 0.7rem;
+  color: #666;
+  font-style: italic;
+  margin-top: 6px;
+}
+
+.inventory__passive-change {
+  background: rgba(155, 89, 182, 0.2);
+  color: #9b59b6;
+  padding: 8px 15px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* Loadout Groups */
+.inventory__loadout-group {
+  margin-bottom: 20px;
+}
+
+.inventory__loadout-group:last-child {
+  margin-bottom: 0;
+}
+
+.inventory__loadout-label {
+  font-size: 0.9rem;
+  color: #888;
+  margin: 0 0 10px;
+  font-weight: 500;
+}
+
+.inventory__loadout-slots {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.inventory__loadout-slots--summoner {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 200px;
+}
+
+/* Ability Slot */
+.inventory__ability-slot {
+  background: linear-gradient(145deg, #1a1a2e 0%, #0d0d1a 100%);
+  border: 2px solid #c8aa6e;
+  border-radius: 10px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.inventory__ability-slot:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(200, 170, 110, 0.4);
+}
+
+.inventory__ability-slot-key {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #c8aa6e;
+  margin-bottom: 5px;
+}
+
+.inventory__ability-slot-icon {
+  font-size: 1.8rem;
+  margin-bottom: 5px;
+}
+
+.inventory__ability-slot-name {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.inventory__ability-slot-type {
+  font-size: 0.65rem;
+  color: #666;
+  text-transform: capitalize;
+}
+
+/* Actions */
+.inventory__actions {
+  display: flex;
+  justify-content: center;
+}
+
+.inventory__play-btn {
+  background: linear-gradient(135deg, #c8aa6e 0%, #a08050 100%);
+  color: #0a0a0a;
+  border: none;
+  padding: 15px 60px;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.inventory__play-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 25px rgba(200, 170, 110, 0.5);
+}

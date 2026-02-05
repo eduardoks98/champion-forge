@@ -1,0 +1,358 @@
+/* ==========================================================================
+   Header Component - Champion Forge
+   ========================================================================== */
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 68px;
+  background: rgba(17, 17, 17, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #2a2a2a;
+  z-index: 100;
+}
+
+.header__container {
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+}
+
+/* Logo */
+.header__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.2s ease;
+}
+
+.header__logo:hover {
+  transform: scale(1.02);
+}
+
+.header__logo-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #d4a418 0%, #b8860b 100%);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: #1a1a1a;
+}
+
+.header__logo-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  background: linear-gradient(135deg, #d4a418 0%, #f4d03f 50%, #d4a418 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Navigation */
+.header__nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header__nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  color: #a0a0a0;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.header__nav-item:hover {
+  color: #d4a418;
+  background: rgba(212, 164, 24, 0.1);
+}
+
+.header__nav-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Right section */
+.header__right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Online badge */
+.header__online-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: #22c55e;
+}
+
+.header__online-dot {
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* User card */
+.header__user-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  padding-left: 0.75rem;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+}
+
+.header__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d4a418 0%, #b8860b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #1a1a1a;
+  overflow: hidden;
+}
+
+.header__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.header__user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.header__username {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* Buttons */
+.header__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.header__btn--primary {
+  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%);
+  color: #1a1a1a;
+}
+
+.header__btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+}
+
+.header__btn--secondary {
+  background: transparent;
+  color: #d4a418;
+  border: 1px solid #d4a418;
+}
+
+.header__btn--secondary:hover {
+  background: rgba(212, 164, 24, 0.1);
+}
+
+.header__btn--ghost {
+  background: transparent;
+  color: #666;
+  padding: 0.5rem;
+}
+
+.header__btn--ghost:hover {
+  color: #d4a418;
+  background: rgba(212, 164, 24, 0.1);
+}
+
+/* ==========================================================================
+   Game Variant
+   ========================================================================== */
+
+.header--game {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  background: rgba(10, 10, 10, 0.95);
+}
+
+.header--game .header__logo-text {
+  font-size: 0.9rem;
+}
+
+.header--game .header__game-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header--game .header__online {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.header--game .header__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header--game .header__user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.header--game .header__username {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+/* ==========================================================================
+   Simple Variant - Landing page when not logged (igual MySys Games)
+   ========================================================================== */
+
+.header--simple {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  gap: 2rem;
+}
+
+/* MySys Logo - icone M para voltar ao portal */
+.header__mysys-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.header__mysys-logo:hover {
+  transform: scale(1.02);
+}
+
+.header__mysys-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #ff0040 0%, #ff3366 100%);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: #fff;
+  box-shadow: 0 0 15px rgba(255, 0, 64, 0.3);
+}
+
+.header__mysys-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #fff;
+}
+
+/* Simple nav - link Jogos */
+.header__simple-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header__simple-nav-item {
+  color: #888;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: color 0.2s ease;
+}
+
+.header__simple-nav-item:hover {
+  color: #fff;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .header__nav {
+    display: none;
+  }
+
+  .header__logo-text {
+    display: none;
+  }
+
+  .header__online-badge span:not(.header__online-dot) {
+    display: none;
+  }
+
+  .header__user-info {
+    display: none;
+  }
+}

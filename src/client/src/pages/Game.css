@@ -1,0 +1,148 @@
+/* Game Page */
+.game-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f1a30 100%);
+  color: #fff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  padding-top: 68px; /* Header height */
+}
+
+/* Stats Bar - Below header */
+.game-stats-bar {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid #2a2a2a;
+  font-size: 0.85rem;
+}
+
+.game-stats-bar span {
+  color: #888;
+}
+
+/* Main Content */
+.game-main {
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+}
+
+/* Game Canvas Container */
+.game-canvas-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Skill Bar */
+.skill-bar {
+  display: flex;
+  gap: 10px;
+}
+
+.skill-slot {
+  width: 80px;
+  height: 70px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid #5c5c5c;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.skill-slot.ready {
+  border-color: #27ae60;
+  box-shadow: 0 0 10px rgba(39, 174, 96, 0.5);
+}
+
+.skill-slot.cooldown {
+  border-color: #5c5c5c;
+  opacity: 0.7;
+}
+
+.skill-key {
+  font-size: 18px;
+  font-weight: bold;
+  color: #f39c12;
+}
+
+.skill-name {
+  font-size: 11px;
+  color: #888;
+  margin-top: 4px;
+}
+
+.skill-cd {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 5px black;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  gap: 10px;
+}
+
+.controls button {
+  background: linear-gradient(135deg, #e67e22, #d35400);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.controls button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 20px rgba(230, 126, 34, 0.5);
+}
+
+/* Instructions */
+.instructions {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 15px 25px;
+  border-radius: 10px;
+  max-width: 400px;
+}
+
+.instructions h3 {
+  margin: 0 0 10px;
+  color: #f39c12;
+  font-size: 16px;
+}
+
+.instructions ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.instructions li {
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: #ccc;
+}
+
+.instructions li::before {
+  content: "▸ ";
+  color: #f39c12;
+}
+
+.instructions strong {
+  color: #fff;
+}

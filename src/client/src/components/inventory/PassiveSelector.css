@@ -1,0 +1,332 @@
+/* Passive Selector Modal */
+.passive-selector__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.passive-selector__modal {
+  background: linear-gradient(145deg, #1a1a2e 0%, #0d0d1a 100%);
+  border: 2px solid #9b59b6;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header */
+.passive-selector__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid rgba(155, 89, 182, 0.3);
+}
+
+.passive-selector__title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #9b59b6;
+  margin: 0;
+}
+
+.passive-selector__close {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 2rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.passive-selector__close:hover {
+  color: #fff;
+}
+
+/* Info */
+.passive-selector__info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: rgba(155, 89, 182, 0.1);
+  border-bottom: 1px solid rgba(155, 89, 182, 0.2);
+  font-size: 0.85rem;
+  color: #b8b8b8;
+}
+
+.passive-selector__info-icon {
+  font-size: 1rem;
+}
+
+/* Weapon Info */
+.passive-selector__weapon-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(155, 89, 182, 0.2);
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.passive-selector__weapon-name {
+  color: #c8aa6e;
+  font-weight: 500;
+}
+
+.passive-selector__weapon-hint {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+/* Filters */
+.passive-selector__filters {
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(155, 89, 182, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.passive-selector__search input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px 15px;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.passive-selector__search input::placeholder {
+  color: #666;
+}
+
+.passive-selector__search input:focus {
+  outline: none;
+  border-color: #9b59b6;
+}
+
+.passive-selector__type-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.passive-selector__type-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #888;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.passive-selector__type-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.passive-selector__type-btn--active {
+  background: rgba(155, 89, 182, 0.2);
+  border-color: #9b59b6;
+  color: #9b59b6;
+}
+
+/* Grid */
+.passive-selector__grid {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+/* Card */
+.passive-selector__card {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.passive-selector__card:hover {
+  background: rgba(155, 89, 182, 0.1);
+  border-color: rgba(155, 89, 182, 0.5);
+  transform: translateY(-2px);
+}
+
+.passive-selector__card--current {
+  background: rgba(155, 89, 182, 0.2);
+  border-color: #9b59b6;
+}
+
+.passive-selector__card--locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.passive-selector__card--locked:hover {
+  transform: none;
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.passive-selector__card--incompatible {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: rgba(231, 76, 60, 0.3);
+}
+
+.passive-selector__card--incompatible:hover {
+  transform: none;
+  background: rgba(231, 76, 60, 0.05);
+  border-color: rgba(231, 76, 60, 0.3);
+}
+
+.passive-selector__card-icon {
+  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.passive-selector__card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.passive-selector__card-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.passive-selector__card-category {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.passive-selector__card-desc {
+  font-size: 0.8rem;
+  color: #888;
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.passive-selector__card-requirements {
+  font-size: 0.7rem;
+  color: #f39c12;
+  font-style: italic;
+}
+
+.passive-selector__card-lock {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 1rem;
+}
+
+.passive-selector__card-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #9b59b6;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.passive-selector__card-badge--incompatible {
+  background: #e74c3c;
+  color: #fff;
+}
+
+/* Footer */
+.passive-selector__footer {
+  padding: 12px 20px;
+  border-top: 1px solid rgba(155, 89, 182, 0.2);
+  text-align: right;
+}
+
+.passive-selector__count {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+/* Scrollbar */
+.passive-selector__grid::-webkit-scrollbar {
+  width: 8px;
+}
+
+.passive-selector__grid::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.passive-selector__grid::-webkit-scrollbar-thumb {
+  background: rgba(155, 89, 182, 0.4);
+  border-radius: 4px;
+}
+
+.passive-selector__grid::-webkit-scrollbar-thumb:hover {
+  background: rgba(155, 89, 182, 0.6);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .passive-selector__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .passive-selector__type-filters {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 5px;
+  }
+
+  .passive-selector__type-btn {
+    flex-shrink: 0;
+  }
+
+  .passive-selector__info {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .passive-selector__weapon-info {
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+  }
+}

@@ -1,0 +1,762 @@
+/* ==========================================
+   CHAMPION FORGE - Landing Page
+   Estilo profissional igual Bangshot
+   ========================================== */
+
+/* Loading Splash */
+.loading-splash {
+  position: fixed;
+  inset: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a0a;
+  color: #fff;
+  z-index: 9999;
+}
+
+.loading-splash__title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  margin-bottom: 2rem;
+  color: #d4a418;
+  text-shadow: 0 0 30px rgba(212, 164, 24, 0.5);
+  animation: titlePulse 2s ease-in-out infinite;
+}
+
+.loading-splash__spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #333;
+  border-top-color: #d4a418;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes titlePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Landing Page */
+.landing {
+  min-height: 100vh;
+  background: #0a0a0a;
+  color: #fff;
+  font-family: system-ui, -apple-system, sans-serif;
+  display: flex;
+  flex-direction: column;
+  padding-top: 68px;
+}
+
+/* ==========================================
+   HEADER - Portal Style (igual Bangshot)
+   ========================================== */
+.landing__header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 68px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  background: rgba(17, 17, 17, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #2a2a2a;
+  z-index: 100;
+}
+
+.landing__header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.landing__header-left {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.landing__header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.landing__logo {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.25s ease;
+}
+
+.landing__logo:hover {
+  color: #ff0040;
+  text-shadow: 0 0 10px rgba(255, 0, 64, 0.3);
+}
+
+.landing__logo-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #ff0040 0%, #dc2626 100%);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(255, 0, 64, 0.3);
+  transition: all 0.25s ease;
+}
+
+.landing__logo:hover .landing__logo-icon {
+  box-shadow: 0 0 20px rgba(255, 0, 64, 0.5);
+  transform: scale(1.05);
+}
+
+.landing__nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.landing__nav-link {
+  padding: 8px 16px;
+  color: #a0a0a0;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.25s ease;
+}
+
+.landing__nav-link:hover {
+  color: #ff0040;
+}
+
+/* ==========================================
+   HERO SECTION
+   ========================================== */
+.landing__hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem;
+  padding: 4rem 2rem;
+  min-height: 70vh;
+  background: radial-gradient(ellipse at center, rgba(212, 164, 24, 0.08) 0%, transparent 60%);
+}
+
+.landing__hero-content {
+  max-width: 500px;
+}
+
+.landing__title {
+  font-size: 4rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  margin: 0 0 1rem 0;
+}
+
+.landing__title-accent {
+  color: #d4a418;
+}
+
+.landing__tagline {
+  font-size: 1.25rem;
+  color: #d4a418;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+}
+
+.landing__description {
+  font-size: 1.1rem;
+  color: #888;
+  line-height: 1.7;
+  margin: 0 0 2rem 0;
+}
+
+.landing__welcome {
+  display: block;
+  color: #888;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+/* Hero Visual */
+.landing__hero-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing__game-icon {
+  animation: float 4s ease-in-out infinite;
+}
+
+.landing__game-icon svg {
+  filter: drop-shadow(0 0 30px rgba(212, 164, 24, 0.3));
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+/* ==========================================
+   CTA BUTTONS
+   ========================================== */
+.landing__cta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.landing__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  min-width: 200px;
+}
+
+.landing__btn--primary {
+  background: #fff;
+  color: #333;
+}
+
+.landing__btn--primary:hover {
+  background: #f0f0f0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+}
+
+.landing__btn--primary:active {
+  transform: translateY(0);
+}
+
+.landing__btn--secondary {
+  background: transparent;
+  color: #d4a418;
+  border: 2px solid #d4a418;
+}
+
+.landing__btn--secondary:hover {
+  background: rgba(212, 164, 24, 0.1);
+  transform: translateY(-2px);
+}
+
+.landing__btn--secondary:active {
+  transform: translateY(0);
+}
+
+/* Gold Button - igual Bangshot */
+.landing__btn--gold {
+  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%);
+  color: #1a1a1a;
+  font-weight: 600;
+  border: 1px solid #b8960c;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+}
+
+.landing__btn--gold:hover {
+  background: linear-gradient(135deg, #e6c349 0%, #f9e066 50%, #e6c349 100%);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+  transform: translateY(-2px);
+}
+
+.landing__btn--gold:active {
+  background: linear-gradient(135deg, #c49f2c 0%, #dbc234 50%, #c49f2c 100%);
+  transform: translateY(0);
+}
+
+/* ==========================================
+   SECTION TITLE
+   ========================================== */
+.landing__section-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  margin: 0 0 3rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ==========================================
+   FEATURES SECTION
+   ========================================== */
+.landing__features-section {
+  padding: 4rem 2rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.landing__features {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.landing__feature {
+  text-align: center;
+  padding: 2rem 1.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.landing__feature:hover {
+  transform: translateY(-5px);
+  border-color: #d4a418;
+  box-shadow: 0 10px 30px rgba(212, 164, 24, 0.1);
+}
+
+.landing__feature-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(212, 164, 24, 0.2) 0%, rgba(212, 164, 24, 0.05) 100%);
+  border-radius: 16px;
+  color: #d4a418;
+}
+
+.landing__feature h3 {
+  color: #fff;
+  margin: 0 0 0.75rem 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.landing__feature p {
+  color: #888;
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ==========================================
+   HOW TO PLAY SECTION
+   ========================================== */
+.landing__howto {
+  padding: 4rem 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.landing__steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.landing__step {
+  text-align: center;
+  position: relative;
+}
+
+.landing__step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 24px;
+  right: -0.75rem;
+  width: calc(100% - 48px);
+  height: 2px;
+  background: linear-gradient(90deg, #d4a418 0%, transparent 100%);
+  transform: translateX(100%);
+}
+
+.landing__step-number {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #d4a418 0%, #b8860b 100%);
+  color: #000;
+  font-size: 1.25rem;
+  font-weight: 900;
+  border-radius: 50%;
+}
+
+.landing__step h3 {
+  font-size: 1rem;
+  color: #fff;
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+}
+
+.landing__step p {
+  font-size: 0.85rem;
+  color: #888;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+@media (max-width: 1024px) {
+  .landing__features {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .landing__steps {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  .landing__step:not(:last-child)::after {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .landing__hero {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 3rem 1.5rem;
+    min-height: auto;
+    text-align: center;
+  }
+
+  .landing__hero-visual {
+    order: -1;
+  }
+
+  .landing__game-icon svg {
+    width: 150px;
+    height: 150px;
+  }
+
+  .landing__title {
+    font-size: 3rem;
+  }
+
+  .landing__tagline {
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+  }
+
+  .landing__features-section {
+    padding: 3rem 1.5rem;
+  }
+
+  .landing__features {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .landing__feature {
+    padding: 1.5rem;
+  }
+
+  .landing__howto {
+    padding: 3rem 1.5rem;
+  }
+
+  .landing__steps {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .landing__section-title {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+}
+
+/* ==========================================
+   USER PROFILE DROPDOWN (igual Portal MySys)
+   ========================================== */
+.user-profile {
+  position: relative;
+}
+
+.user-profile-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.user-profile-trigger:hover {
+  background: #1a1a1a;
+  border-color: #333;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-avatar--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ff0040 0%, #dc2626 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.user-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #fff;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown-arrow {
+  width: 16px;
+  height: 16px;
+  color: #666;
+  transition: transform 0.15s ease;
+}
+
+.user-profile.open .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 280px;
+  background: #141414;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+  z-index: 200;
+  animation: dropdownFadeIn 0.2s ease;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-header {
+  padding: 16px;
+  border-bottom: 1px solid #2a2a2a;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(180deg, #1a1a1a 0%, #141414 100%);
+  border-radius: 12px 12px 0 0;
+}
+
+.user-avatar-large {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid #ff0040;
+  box-shadow: 0 0 10px rgba(255, 0, 64, 0.3);
+}
+
+.user-avatar-large.user-avatar--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ff0040 0%, #dc2626 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.dropdown-header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-name-large {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  margin-bottom: 2px;
+  color: #fff;
+}
+
+.user-email {
+  font-size: 0.75rem;
+  color: #888;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown-menu {
+  padding: 12px;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 16px;
+  color: #888;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: #1a1a1a;
+  width: 100%;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dropdown-item:hover {
+  background: #111;
+  color: #fff;
+  border-color: #2a2a2a;
+}
+
+.dropdown-item svg {
+  width: 18px;
+  height: 18px;
+}
+
+.dropdown-item.logout {
+  color: #ff0040;
+  border-color: rgba(255, 0, 64, 0.2);
+}
+
+.dropdown-item.logout:hover {
+  background: rgba(255, 0, 64, 0.1);
+  border-color: #ff0040;
+}
+
+/* ==========================================
+   LOGIN BUTTON (igual Portal MySys)
+   ========================================== */
+.btn-login {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+  cursor: pointer;
+  background: none;
+}
+
+.btn-primary-outline {
+  background: transparent;
+  color: #ff0040;
+  border: 1px solid #ff0040;
+}
+
+.btn-primary-outline:hover {
+  background: #ff0040;
+  color: white;
+  box-shadow: 0 0 20px rgba(255, 0, 64, 0.5);
+}
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+@media (max-width: 480px) {
+  .landing__header {
+    padding: 0 1rem;
+  }
+
+  .landing__logo span {
+    display: none;
+  }
+
+  .user-name {
+    display: none;
+  }
+
+  .btn-login span {
+    display: none;
+  }
+
+  .btn-login {
+    padding: 8px;
+  }
+
+  .landing__title {
+    font-size: 2.5rem;
+  }
+
+  .landing__tagline {
+    font-size: 0.9rem;
+  }
+
+  .landing__description {
+    font-size: 1rem;
+  }
+
+  .landing__btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
+    min-width: 180px;
+  }
+}

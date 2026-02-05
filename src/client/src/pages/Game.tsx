@@ -1,40 +1,52 @@
-import { useEffect, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import GameCanvas from '../components/GameCanvas';
+import { GameStats } from '../game/engine/GameEngine';
+import { useAuth } from '../context/AuthContext';
+import './Game.css';
 
 export default function Game() {
-  const [socket, setSocket] = useState<Socket | null>(null);
-  const [connected, setConnected] = useState(false);
+  const { isAuthenticated, isLoading } = useAuth();
+  const navigate = useNavigate();
+  const [stats, setStats] = useState<GameStats>({
+    fps: 60,
+    entities: 0,
+    particles: 0,
+    statusEffects: 0,
+  });
 
+  // Redirecionar se nao autenticado (igual Bangshot)
   useEffect(() => {
-    const newSocket = io(import.meta.env.VITE_API_URL || 'http://localhost:3001');
+    if (!isLoading && !isAuthenticated) {
+      navigate('/');
+    }
+  }, [isLoading, isAuthenticated, navigate]);
 
-    newSocket.on('connect', () => {
-      setConnected(true);
-      console.log('Connected to server');
-    });
+  // Loading enquanto verifica auth
+  if (isLoading) {
+    return (
+      <div className="game-page game-page--loading">
+        <div className="loading-spinner" />
+      </div>
+    );
+  }
 
-    newSocket.on('disconnect', () => {
-      setConnected(false);
-      console.log('Disconnected from server');
-    });
-
-    setSocket(newSocket);
-
-    return () => {
-      newSocket.close();
-    };
-  }, []);
+  // Nao renderizar se nao autenticado (vai redirecionar)
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
-    <div className="game">
-      <header>
-        <span>Status: {connected ? '🟢 Conectado' : '🔴 Desconectado'}</span>
-      </header>
+    <div className="game-page">
+      <div className="game-stats-bar">
+        <span>FPS: {stats.fps}</span>
+        <span>Entities: {stats.entities}</span>
+        <span>Particles: {stats.particles}</span>
+        <span>Effects: {stats.statusEffects}</span>
+      </div>
 
-      <main>
-        <h2>Champion Forge - Arena</h2>
-        <p>Implemente seu jogo aqui!</p>
-        {/* Seu jogo vai aqui */}
+      <main className="game-main">
+        <GameCanvas onStatsUpdate={setStats} />
       </main>
     </div>
   );

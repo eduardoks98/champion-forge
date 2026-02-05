@@ -21,7 +21,7 @@ model User {
   lp            Int      @default(0)
   mmr           Int      @default(0)
 
-  // Stats
+  // Stats básicas (mantidas para compatibilidade)
   gamesPlayed   Int      @default(0) @map("games_played")
   gamesWon      Int      @default(0) @map("games_won")
   totalXp       Int      @default(0) @map("total_xp")
@@ -29,7 +29,42 @@ model User {
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 
+  // Relação com stats detalhadas
+  stats         UserStats?
+
   @@map("users")
+}
+
+// Sistema de Estatísticas com Progressão (Estilo LoL Eternals)
+model UserStats {
+  id            String   @id @default(uuid())
+  userId        String   @unique @map("user_id")
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // === COMBATE ===
+  kills         Int      @default(0)
+  deaths        Int      @default(0)
+  assists       Int      @default(0)
+  damageDealt   Int      @default(0) @map("damage_dealt")
+  damageTaken   Int      @default(0) @map("damage_taken")
+
+  // === PARTIDAS ===
+  gamesPlayed   Int      @default(0) @map("games_played")
+  wins          Int      @default(0)
+  losses        Int      @default(0)
+  winStreak     Int      @default(0) @map("win_streak")
+  maxWinStreak  Int      @default(0) @map("max_win_streak")
+  timePlayed    Int      @default(0) @map("time_played") // em minutos
+
+  // === HABILIDADES ===
+  abilitiesUsed Int      @default(0) @map("abilities_used")
+  skillshotsHit Int      @default(0) @map("skillshots_hit")
+  dashesUsed    Int      @default(0) @map("dashes_used")
+  criticalHits  Int      @default(0) @map("critical_hits")
+
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("user_stats")
 }
 
 model Game {

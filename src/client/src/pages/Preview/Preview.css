@@ -1,0 +1,204 @@
+/* ==========================================
+   PREVIEW PAGE - Minimal visual for iframe
+   Champion Forge
+   ========================================== */
+
+.preview {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1208 50%, #0a0a0a 100%);
+  overflow: hidden;
+}
+
+.preview__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  z-index: 1;
+}
+
+.preview__title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #fff;
+  margin: 0;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 30px rgba(212, 164, 24, 0.5);
+  animation: titlePulse 3s ease-in-out infinite;
+}
+
+.preview__accent {
+  color: #d4a418;
+}
+
+@keyframes titlePulse {
+  0%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 30px rgba(212, 164, 24, 0.5);
+  }
+  50% {
+    opacity: 0.85;
+    text-shadow: 0 0 50px rgba(212, 164, 24, 0.8);
+  }
+}
+
+.preview__icon {
+  filter: drop-shadow(0 0 20px rgba(212, 164, 24, 0.4));
+  animation: iconFloat 4s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(3deg);
+  }
+}
+
+/* Animated rings */
+.preview__ring {
+  transform-origin: center;
+}
+
+.preview__ring--outer {
+  animation: ringRotate 20s linear infinite;
+}
+
+.preview__ring--inner {
+  animation: ringRotate 15s linear infinite reverse;
+}
+
+@keyframes ringRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Sword pulse */
+.preview__swords {
+  transform-origin: center;
+  animation: swordPulse 2s ease-in-out infinite;
+}
+
+@keyframes swordPulse {
+  0%, 100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 5px rgba(212, 164, 24, 0.5));
+  }
+  50% {
+    opacity: 0.9;
+    filter: drop-shadow(0 0 15px rgba(212, 164, 24, 0.8));
+  }
+}
+
+/* Center gem pulse */
+.preview__center {
+  animation: centerPulse 1.5s ease-in-out infinite;
+}
+
+.preview__center-glow {
+  animation: centerGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes centerPulse {
+  0%, 100% {
+    opacity: 0.6;
+    r: 10;
+  }
+  50% {
+    opacity: 0.9;
+    r: 12;
+  }
+}
+
+@keyframes centerGlow {
+  0%, 100% {
+    opacity: 0.3;
+    r: 6;
+  }
+  50% {
+    opacity: 0.6;
+    r: 8;
+  }
+}
+
+/* Pommel shine */
+.preview__pommel {
+  animation: pommelShine 3s ease-in-out infinite;
+}
+
+.preview__pommel:nth-child(odd) {
+  animation-delay: 0.5s;
+}
+
+@keyframes pommelShine {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+.preview__tagline {
+  font-size: 0.9rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin: 0;
+  animation: fadeInOut 3s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Decorative glows */
+.preview__glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.preview__glow--1 {
+  width: 400px;
+  height: 400px;
+  background: #d4a418;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: glowPulse 4s ease-in-out infinite;
+}
+
+.preview__glow--2 {
+  width: 300px;
+  height: 300px;
+  background: #8b4513;
+  bottom: -100px;
+  right: -100px;
+  animation: glowPulse 5s ease-in-out infinite reverse;
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.1; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.2; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .preview__title {
+    font-size: 1.75rem;
+  }
+
+  .preview__icon svg {
+    width: 100px;
+    height: 100px;
+  }
+
+  .preview__tagline {
+    font-size: 0.75rem;
+  }
+}

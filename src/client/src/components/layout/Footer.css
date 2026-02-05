@@ -1,0 +1,100 @@
+/* ==========================================================================
+   Footer Component - Portal MySys Style
+   ========================================================================== */
+
+.footer {
+  background: #111;
+  padding: 32px 24px;
+  border-top: 1px solid #2a2a2a;
+  margin-top: auto;
+  overflow: hidden;
+}
+
+.footer__content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer__logo {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.footer__links {
+  display: flex;
+  gap: 32px;
+}
+
+.footer__link {
+  color: #666;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.footer__link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #ff0040;
+  transition: width 0.25s ease;
+}
+
+.footer__link:hover {
+  color: #ff0040;
+}
+
+.footer__link:hover::after {
+  width: 100%;
+}
+
+.footer__copy {
+  width: 100%;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: #666;
+  margin: 16px 0 0 0;
+  padding-top: 16px;
+  position: relative;
+}
+
+/* Linha divisória full width */
+.footer__copy::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: calc(-50vw + 50%);
+  right: calc(-50vw + 50%);
+  height: 1px;
+  background: #1f1f1f;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .footer__content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer__links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }
+}

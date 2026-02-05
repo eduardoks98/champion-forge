@@ -1,0 +1,381 @@
+/* ==========================================
+   PROFILE PAGE
+   ========================================== */
+.profile {
+  min-height: 100vh;
+  background: #0a0a0a;
+  color: #fff;
+  font-family: system-ui, -apple-system, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile__content {
+  flex: 1;
+  padding: 100px 2rem 4rem;
+}
+
+.profile__container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Login Prompt */
+.profile__login-prompt {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.profile__login-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(212, 164, 24, 0.1);
+  border-radius: 50%;
+}
+
+.profile__login-icon svg {
+  width: 40px;
+  height: 40px;
+  stroke: #d4a418;
+}
+
+.profile__login-prompt h1 {
+  font-size: 1.75rem;
+  margin: 0 0 1rem 0;
+}
+
+.profile__login-prompt p {
+  color: #888;
+  margin: 0 0 2rem 0;
+}
+
+/* Profile Header */
+.profile__header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem;
+  background: rgba(20, 20, 20, 0.8);
+  border: 1px solid #2a2a2a;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+}
+
+.profile__avatar-wrapper {
+  position: relative;
+}
+
+.profile__avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d4a418 0%, #b8860b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  overflow: hidden;
+}
+
+.profile__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile__level {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  background: linear-gradient(135deg, #d4a418 0%, #b8860b 100%);
+  color: #1a1a1a;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: 10px;
+}
+
+.profile__info {
+  flex: 1;
+}
+
+.profile__name {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
+}
+
+.profile__username {
+  color: #888;
+  margin: 0 0 0.5rem 0;
+}
+
+.profile__member-since {
+  color: #666;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.profile__actions {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Section */
+.profile__section {
+  background: rgba(20, 20, 20, 0.8);
+  border: 1px solid #2a2a2a;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.profile__section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #d4a418;
+  margin: 0 0 1.5rem 0;
+}
+
+/* Stats Grid */
+.profile__stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.profile__stat-card {
+  text-align: center;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+}
+
+.profile__stat-value {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.profile__stat-label {
+  font-size: 0.8rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Matches Empty */
+.profile__matches-empty {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.profile__matches-empty svg {
+  width: 48px;
+  height: 48px;
+  stroke: #444;
+  margin-bottom: 1rem;
+}
+
+.profile__matches-empty p {
+  margin: 0 0 1.5rem 0;
+}
+
+/* Achievements */
+.profile__achievements {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.profile__achievement {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.profile__achievement--locked {
+  opacity: 0.4;
+}
+
+.profile__achievement-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+}
+
+.profile__achievement-icon svg {
+  width: 32px;
+  height: 32px;
+  stroke: #d4a418;
+}
+
+.profile__achievement--locked .profile__achievement-icon svg {
+  stroke: #666;
+}
+
+.profile__achievement span {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+/* Buttons */
+.profile__btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  text-decoration: none;
+}
+
+.profile__btn--primary {
+  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%);
+  color: #1a1a1a;
+}
+
+.profile__btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+}
+
+.profile__btn--secondary {
+  background: transparent;
+  color: #888;
+  border: 1px solid #444;
+}
+
+.profile__btn--secondary:hover {
+  border-color: #d4a418;
+  color: #d4a418;
+}
+
+/* ==========================================
+   ESTATÍSTICAS COM PROGRESSÃO (Estilo LoL Eternals)
+   ========================================== */
+
+/* Section Header com XP */
+.profile__section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.profile__section-header .profile__section-title {
+  margin-bottom: 0;
+}
+
+.profile__xp-total {
+  font-size: 0.9rem;
+  color: #d4a418;
+  font-weight: 600;
+}
+
+/* Tabs de Categoria */
+.profile__stats-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.profile__stats-tab {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #888;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.profile__stats-tab:hover {
+  border-color: #555;
+  color: #fff;
+}
+
+.profile__stats-tab--active {
+  background: linear-gradient(135deg, rgba(212, 164, 24, 0.2), rgba(212, 164, 24, 0.1));
+  border-color: #d4a418;
+  color: #d4a418;
+}
+
+/* Lista de Stats */
+.profile__stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.profile__stats-loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .profile__stats-grid,
+  .profile__achievements {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .profile__content {
+    padding: 90px 1rem 3rem;
+  }
+
+  .profile__header {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem;
+  }
+
+  .profile__info {
+    text-align: center;
+  }
+
+  .profile__avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+
+  .profile__name {
+    font-size: 1.5rem;
+  }
+
+  .profile__stats-grid,
+  .profile__achievements {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .profile__stat-value {
+    font-size: 1.5rem;
+  }
+}

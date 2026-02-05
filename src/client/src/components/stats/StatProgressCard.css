@@ -1,0 +1,196 @@
+/* ==========================================
+   STAT PROGRESS CARD
+   Estilo LoL Eternals - Barra de progresso com milestones
+   ========================================== */
+
+.stat-card {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  background: rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Header */
+.stat-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.stat-card__icon {
+  font-size: 1.25rem;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+}
+
+.stat-card__name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #e0e0e0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Valores */
+.stat-card__values {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.stat-card__current {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-card__separator {
+  font-size: 1.25rem;
+  color: #666;
+  margin: 0 0.25rem;
+}
+
+.stat-card__next {
+  font-size: 1rem;
+  color: #888;
+  font-weight: 500;
+}
+
+/* Barra de Progresso */
+.stat-card__progress-container {
+  position: relative;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.stat-card__progress-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #d4a418, #f5c842);
+  border-radius: 4px;
+  transition: width 1s ease-out;
+  box-shadow: 0 0 10px rgba(212, 164, 24, 0.5);
+}
+
+.stat-card__progress-text {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.65rem;
+  color: #888;
+  padding-right: 0.25rem;
+  display: none; /* Mostrar apenas em hover */
+}
+
+.stat-card:hover .stat-card__progress-text {
+  display: block;
+}
+
+/* Milestones */
+.stat-card__milestones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.stat-card__milestone {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: default;
+  transition: all 0.2s ease;
+}
+
+/* Milestone Completado */
+.stat-card__milestone--completed {
+  background: rgba(39, 174, 96, 0.2);
+  border: 1px solid rgba(39, 174, 96, 0.4);
+  color: #2ecc71;
+}
+
+.stat-card__milestone--completed .stat-card__milestone-check {
+  color: #2ecc71;
+  font-weight: bold;
+}
+
+/* Milestone Atual (em progresso) */
+.stat-card__milestone--current {
+  background: rgba(212, 164, 24, 0.2);
+  border: 1px solid rgba(212, 164, 24, 0.4);
+  color: #f5c842;
+  animation: pulse-milestone 2s ease-in-out infinite;
+}
+
+.stat-card__milestone--current .stat-card__milestone-current {
+  color: #f5c842;
+}
+
+@keyframes pulse-milestone {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(212, 164, 24, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 8px 2px rgba(212, 164, 24, 0.3);
+  }
+}
+
+/* Milestone Bloqueado */
+.stat-card__milestone--locked {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #666;
+  opacity: 0.6;
+}
+
+.stat-card__milestone--locked .stat-card__milestone-locked {
+  color: #555;
+}
+
+.stat-card__milestone-value {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Hover no milestone para mostrar XP */
+.stat-card__milestone:hover {
+  transform: scale(1.05);
+}
+
+/* Responsivo */
+@media (max-width: 480px) {
+  .stat-card {
+    padding: 0.875rem 1rem;
+  }
+
+  .stat-card__current {
+    font-size: 1.5rem;
+  }
+
+  .stat-card__milestones {
+    gap: 0.375rem;
+  }
+
+  .stat-card__milestone {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.7rem;
+  }
+}
