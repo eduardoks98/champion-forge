@@ -19,7 +19,7 @@ interface SocketProviderProps {
 }
 
 export function SocketProvider({ children }: SocketProviderProps) {
-  const { isAuthenticated, token } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [onlineCount, setOnlineCount] = useState(0);
@@ -29,9 +29,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 
     const newSocket = io(SERVER_URL, {
       transports: ['websocket', 'polling'],
-      auth: {
-        token: token || localStorage.getItem('champion_forge_auth_token'),
-      },
+      withCredentials: true, // Send httpOnly cookie automatically
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
@@ -64,7 +62,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
     });
 
     setSocket(newSocket);
-  }, [socket, token]);
+  }, [socket]);
 
   const disconnect = useCallback(() => {
     if (socket) {

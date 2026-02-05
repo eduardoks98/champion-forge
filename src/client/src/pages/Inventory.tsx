@@ -7,6 +7,7 @@ import Footer from '../components/layout/Footer';
 import AbilitySelector from '../components/inventory/AbilitySelector';
 import WeaponSelector from '../components/inventory/WeaponSelector';
 import PassiveSelector from '../components/inventory/PassiveSelector';
+import CharacterPreview from '../components/inventory/CharacterPreview';
 import { getAbility } from '../game/data/abilities';
 import { getWeapon, RARITY_COLORS } from '../game/data/weapons';
 import { getPassive, PASSIVE_CATEGORY_COLORS } from '../game/data/passives';
@@ -199,8 +200,18 @@ export default function Inventory() {
           </div>
 
           {/* Main Content Grid */}
-          <div className="inventory__grid">
-            {/* Coluna Esquerda - Equipamento */}
+          <div className="inventory__grid inventory__grid--three-col">
+            {/* Coluna Esquerda - Preview do Personagem */}
+            <div className="inventory__section inventory__section--preview">
+              <h2 className="inventory__section-title">Preview</h2>
+              <CharacterPreview
+                weaponId={equippedWeapon}
+                loadout={loadout}
+                passiveId={equippedPassive}
+              />
+            </div>
+
+            {/* Coluna Central - Equipamento */}
             <div className="inventory__section">
               <h2 className="inventory__section-title">Arma Equipada</h2>
               {renderEquippedWeapon()}

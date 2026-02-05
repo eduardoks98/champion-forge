@@ -8,6 +8,53 @@
   justify-content: center;
   z-index: 1000;
   padding: 20px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes cardPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200, 170, 110, 0); }
+  50% { box-shadow: 0 0 20px 5px rgba(200, 170, 110, 0.4); }
+}
+
+@keyframes selectFlash {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(200, 170, 110, 0.8);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px 10px rgba(200, 170, 110, 0.6);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(200, 170, 110, 0);
+  }
+}
+
+@keyframes iconBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 .ability-selector__modal {
@@ -20,6 +67,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  animation: slideIn 0.3s ease-out;
 }
 
 /* Header */
@@ -119,6 +167,21 @@
   gap: 12px;
 }
 
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ability-selector__grid .ability-selector__card {
+  animation: cardSlideIn 0.3s ease-out backwards;
+}
+
 /* Card */
 .ability-selector__card {
   background: rgba(0, 0, 0, 0.3);
@@ -128,19 +191,51 @@
   display: flex;
   gap: 12px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s ease;
   position: relative;
+  overflow: hidden;
+}
+
+.ability-selector__card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.ability-selector__card:hover::before {
+  opacity: 1;
+  animation: shimmer 1.5s infinite;
 }
 
 .ability-selector__card:hover {
-  background: rgba(200, 170, 110, 0.1);
-  border-color: rgba(200, 170, 110, 0.5);
-  transform: translateY(-2px);
+  background: rgba(200, 170, 110, 0.15);
+  border-color: rgba(200, 170, 110, 0.6);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 0 15px rgba(200, 170, 110, 0.2);
+}
+
+.ability-selector__card:hover .ability-selector__card-icon {
+  animation: iconBounce 0.4s ease;
 }
 
 .ability-selector__card--current {
-  background: rgba(200, 170, 110, 0.2);
+  background: rgba(200, 170, 110, 0.25);
   border-color: #c8aa6e;
+  animation: cardPulse 2s infinite;
+}
+
+.ability-selector__card--selecting {
+  animation: selectFlash 0.5s ease-out;
+  pointer-events: none;
 }
 
 .ability-selector__card--locked {
@@ -173,6 +268,16 @@
   background: rgba(0, 0, 0, 0.4);
   border-radius: 8px;
   flex-shrink: 0;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ability-selector__card:hover .ability-selector__card-icon {
+  box-shadow: 0 0 15px rgba(200, 170, 110, 0.3);
+}
+
+.ability-selector__card--current .ability-selector__card-icon {
+  background: rgba(200, 170, 110, 0.3);
+  box-shadow: 0 0 20px rgba(200, 170, 110, 0.4);
 }
 
 .ability-selector__card-info {
@@ -187,11 +292,23 @@
   margin-bottom: 2px;
 }
 
+.ability-selector__card-meta {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
 .ability-selector__card-type {
   font-size: 0.75rem;
   font-weight: 500;
   text-transform: uppercase;
-  margin-bottom: 4px;
+}
+
+.ability-selector__card-category {
+  font-size: 0.7rem;
+  font-weight: 400;
+  text-transform: capitalize;
+  opacity: 0.8;
 }
 
 .ability-selector__card-desc {
@@ -230,6 +347,25 @@
 .ability-selector__card-badge--equipped {
   background: #666;
   color: #fff;
+}
+
+/* Selecting overlay */
+.ability-selector__card-selecting-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(200, 170, 110, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.ability-selector__card-selecting-overlay span {
+  color: #c8aa6e;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-shadow: 0 0 10px rgba(200, 170, 110, 0.8);
 }
 
 /* Footer */

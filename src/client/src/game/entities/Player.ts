@@ -2,12 +2,14 @@ import { Entity, Vector2 } from './Entity';
 import { COLORS } from '../constants/colors';
 import { SIZES, SPEEDS, TIMING, DAMAGE, RANGES, STATUS_VALUES } from '../constants/timing';
 import { getWeapon, calculateWeaponDamage, calculateAttackSpeed, DEFAULT_WEAPON, WeaponDefinition } from '../data/weapons';
+import { SpriteManager, WeaponSpriteType, AnimationEffects } from '../sprites';
 
 export interface DashGhost {
   x: number;
   y: number;
   opacity: number;
   scale: number;
+  angle: number;
 }
 
 export class Player extends Entity {
@@ -40,6 +42,15 @@ export class Player extends Entity {
   // Casting animation (for abilities like Meteor)
   isCasting: boolean = false;
   castTimer: number = 0;
+
+  // Animation state
+  private animationTime: number = 0;
+  private walkCycle: number = 0;
+
+  // Weapon swap animation
+  private isSwappingWeapon: boolean = false;
+  private weaponSwapTimer: number = 0;
+  private previousWeaponType: WeaponSpriteType | null = null;
 
   // Cooldowns
   cooldowns: {
@@ -90,6 +101,21 @@ export class Player extends Entity {
   equipWeapon(weaponId: string): void {
     const weapon = getWeapon(weaponId);
     if (weapon) {
+      // Trigger weapon swap animation
+      if (this.cachedWeapon && this.cachedWeapon.id !== weaponId) {
+        this.previousWeaponType = this.cachedWeapon.type as WeaponSpriteType;
+        this.isSwappingWeapon = true;
+        this.weaponSwapTimer = 600;
+
+        // Trigger visual effect
+        AnimationEffects.triggerWeaponSwap(
+          this.centerX,
+          this.centerY,
+          this.previousWeaponType,
+          weapon.type as WeaponSpriteType
+        );
+      }
+
       this.equippedWeaponId = weaponId;
       this.cachedWeapon = weapon;
     }
@@ -108,6 +134,38 @@ export class Player extends Entity {
     this.updateDash(deltaTime);
     this.updateCleave(deltaTime);
     this.updateCast(deltaTime);
+    this.updateAnimations(deltaTime);
+    this.updateWeaponSwap(deltaTime);
+
+    // Update animation effects
+    AnimationEffects.update(deltaTime);
+  }
+
+  private updateAnimations(deltaTime: number): void {
+    this.animationTime += deltaTime;
+
+    // Walk cycle animation
+    if (this.isMoving) {
+      this.walkCycle += deltaTime * 0.02;
+    } else {
+      // Smoothly return to idle
+      this.walkCycle = this.walkCycle % (Math.PI * 2);
+      if (this.walkCycle > 0.1) {
+        this.walkCycle -= deltaTime * 0.01;
+      } else {
+        this.walkCycle = 0;
+      }
+    }
+  }
+
+  private updateWeaponSwap(deltaTime: number): void {
+    if (this.isSwappingWeapon) {
+      this.weaponSwapTimer -= deltaTime;
+      if (this.weaponSwapTimer <= 0) {
+        this.isSwappingWeapon = false;
+        this.previousWeaponType = null;
+      }
+    }
   }
 
   private updateCooldowns(deltaTime: number): void {
@@ -256,6 +314,7 @@ export class Player extends Entity {
         y: startY + (endY - startY) * (i / ghostCount),
         opacity: 0.5,
         scale: 1,
+        angle: this.facingAngle,
       });
     }
 
@@ -417,116 +476,49 @@ export class Player extends Entity {
   render(ctx: CanvasRenderingContext2D): void {
     ctx.save();
 
-    // Renderizar dash ghosts
-    this.dashGhosts.forEach(ghost => {
-      ctx.globalAlpha = ghost.opacity;
-      ctx.fillStyle = COLORS.player;
-      ctx.beginPath();
-      ctx.arc(
-        ghost.x + this.width / 2,
-        ghost.y + this.height / 2,
-        (this.width / 2) * ghost.scale,
-        0,
-        Math.PI * 2
-      );
-      ctx.fill();
-    });
+    // Renderizar animation effects (weapon swap, ability equip, etc.)
+    AnimationEffects.render(ctx);
+
+    // Renderizar dash ghosts com efeito melhorado
+    this.renderDashGhosts(ctx);
 
     ctx.globalAlpha = 1;
 
-    // Cor com efeito de hit ou CC
-    let fillColor = this.color;
+    // Determinar estado visual
+    const visualState = this.getVisualState();
+    const animationProgress = this.getAnimationProgress();
+
+    // Determinar cor do corpo
+    let bodyColor = this.color;
     if (this.isHit) {
       const hitProgress = this.hitTimer / 200;
-      fillColor = hitProgress > 0.5 ? COLORS.playerDamaged : this.color;
+      bodyColor = hitProgress > 0.5 ? COLORS.playerDamaged : this.color;
     }
-
-    // Visual effect when stunned/slowed
     if (this.isStunned()) {
-      fillColor = '#8888ff';
+      bodyColor = '#8888ff';
     } else if (this.hasStatusEffect('slow')) {
-      fillColor = '#aaccff';
+      bodyColor = '#aaccff';
     }
 
-    // Casting glow effect
-    if (this.isCasting) {
-      ctx.shadowColor = '#ff8800';
-      ctx.shadowBlur = 30;
-    } else {
-      ctx.shadowColor = COLORS.playerGlow;
-      ctx.shadowBlur = 20;
-    }
-
-    // Corpo do jogador (círculo)
-    ctx.fillStyle = fillColor;
-    ctx.beginPath();
-    ctx.arc(this.centerX, this.centerY, this.width / 2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.shadowBlur = 0;
+    // Renderizar personagem procedural melhorado
+    SpriteManager.renderProceduralCharacter(
+      ctx,
+      this.centerX,
+      this.centerY,
+      this.width / 2,
+      bodyColor,
+      this.facingAngle,
+      visualState,
+      animationProgress
+    );
 
     // Cleave arc indicator when cleaving
     if (this.isCleaving) {
-      ctx.save();
-      ctx.translate(this.centerX, this.centerY);
-      ctx.rotate(this.facingAngle - Math.PI / 2);
-
-      ctx.fillStyle = 'rgba(255, 100, 0, 0.3)';
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.arc(0, 0, RANGES.cleave, -this.cleaveAngle / 2, this.cleaveAngle / 2);
-      ctx.closePath();
-      ctx.fill();
-
-      // Cleave sweep line
-      ctx.strokeStyle = 'rgba(255, 150, 0, 0.8)';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      const sweepAngle = -Math.PI / 2 + this.cleaveAngle - Math.PI / 2;
-      ctx.moveTo(0, 0);
-      ctx.lineTo(
-        Math.cos(sweepAngle) * RANGES.cleave,
-        Math.sin(sweepAngle) * RANGES.cleave
-      );
-      ctx.stroke();
-
-      ctx.restore();
+      this.renderCleaveArc(ctx);
     }
 
-    // Arma (não renderiza durante cleave)
-    if (!this.isCleaving) {
-      ctx.save();
-      ctx.translate(this.centerX, this.centerY);
-      ctx.rotate(this.facingAngle + this.weaponAngle);
-
-      ctx.fillStyle = COLORS.weapon;
-      ctx.shadowColor = COLORS.weaponGlow;
-      ctx.shadowBlur = 10;
-      ctx.fillRect(
-        this.width / 2 - 10,
-        -SIZES.weapon.height / 2,
-        SIZES.weapon.width,
-        SIZES.weapon.height
-      );
-      ctx.shadowBlur = 0;
-      ctx.restore();
-    } else {
-      // Render weapon during cleave (spinning)
-      ctx.save();
-      ctx.translate(this.centerX, this.centerY);
-      ctx.rotate(this.facingAngle - Math.PI / 2 + this.cleaveAngle);
-
-      ctx.fillStyle = COLORS.weapon;
-      ctx.shadowColor = '#ff6600';
-      ctx.shadowBlur = 15;
-      ctx.fillRect(
-        this.width / 2 - 10,
-        -SIZES.weapon.height / 2,
-        SIZES.weapon.width + 10, // Longer weapon during cleave
-        SIZES.weapon.height
-      );
-      ctx.shadowBlur = 0;
-      ctx.restore();
-    }
+    // Renderizar arma com novo sistema
+    this.renderWeapon(ctx);
 
     // Barra de vida e shield
     this.renderHealthBar(ctx);
@@ -560,6 +552,142 @@ export class Player extends Entity {
     ctx.strokeStyle = '#ffaa00';
     ctx.lineWidth = 1;
     ctx.strokeRect(barX, barY, barWidth, barHeight);
+  }
+
+  private renderDashGhosts(ctx: CanvasRenderingContext2D): void {
+    const weaponType = this.cachedWeapon?.type as WeaponSpriteType || 'sword';
+
+    this.dashGhosts.forEach(ghost => {
+      ctx.globalAlpha = ghost.opacity;
+
+      // Ghost body
+      SpriteManager.renderProceduralCharacter(
+        ctx,
+        ghost.x + this.width / 2,
+        ghost.y + this.height / 2,
+        (this.width / 2) * ghost.scale,
+        COLORS.player,
+        ghost.angle,
+        'dash',
+        0.5
+      );
+
+      // Ghost weapon (faded)
+      ctx.globalAlpha = ghost.opacity * 0.5;
+      SpriteManager.renderProceduralWeapon(
+        ctx,
+        weaponType,
+        ghost.x + this.width / 2,
+        ghost.y + this.height / 2,
+        ghost.angle,
+        ghost.scale * 0.8,
+        false
+      );
+    });
+
+    ctx.globalAlpha = 1;
+  }
+
+  private renderCleaveArc(ctx: CanvasRenderingContext2D): void {
+    ctx.save();
+    ctx.translate(this.centerX, this.centerY);
+    ctx.rotate(this.facingAngle - Math.PI / 2);
+
+    ctx.fillStyle = 'rgba(255, 100, 0, 0.3)';
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, RANGES.cleave, -this.cleaveAngle / 2, this.cleaveAngle / 2);
+    ctx.closePath();
+    ctx.fill();
+
+    // Cleave sweep line
+    ctx.strokeStyle = 'rgba(255, 150, 0, 0.8)';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    const sweepAngle = -Math.PI / 2 + this.cleaveAngle - Math.PI / 2;
+    ctx.moveTo(0, 0);
+    ctx.lineTo(
+      Math.cos(sweepAngle) * RANGES.cleave,
+      Math.sin(sweepAngle) * RANGES.cleave
+    );
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  private renderWeapon(ctx: CanvasRenderingContext2D): void {
+    if (!this.cachedWeapon) return;
+
+    const weaponType = this.cachedWeapon.type as WeaponSpriteType;
+    const isAttacking = this.isAttacking || this.isCleaving;
+
+    // Escala da arma durante troca
+    let weaponScale = 1;
+    let weaponAlpha = 1;
+    if (this.isSwappingWeapon) {
+      const swapProgress = 1 - (this.weaponSwapTimer / 600);
+      if (swapProgress < 0.3) {
+        // Arma antiga desaparecendo
+        weaponScale = 1 - (swapProgress / 0.3) * 0.5;
+        weaponAlpha = 1 - (swapProgress / 0.3);
+      } else if (swapProgress < 0.5) {
+        // Transição
+        weaponScale = 0.5;
+        weaponAlpha = 0;
+      } else {
+        // Nova arma aparecendo
+        const appearProgress = (swapProgress - 0.5) / 0.5;
+        weaponScale = 0.5 + appearProgress * 0.5;
+        weaponAlpha = appearProgress;
+      }
+    }
+
+    ctx.globalAlpha = weaponAlpha;
+
+    if (this.isCleaving) {
+      // Arma girando durante cleave
+      SpriteManager.renderProceduralWeapon(
+        ctx,
+        weaponType,
+        this.centerX,
+        this.centerY,
+        this.facingAngle - Math.PI / 2 + this.cleaveAngle,
+        weaponScale * 1.2,
+        true
+      );
+    } else {
+      // Arma normal ou durante ataque
+      SpriteManager.renderProceduralWeapon(
+        ctx,
+        weaponType,
+        this.centerX,
+        this.centerY,
+        this.facingAngle + this.weaponAngle,
+        weaponScale,
+        isAttacking
+      );
+    }
+
+    ctx.globalAlpha = 1;
+  }
+
+  private getVisualState(): 'idle' | 'walk' | 'attack' | 'dash' | 'cast' | 'hit' | 'stunned' {
+    if (this.isStunned()) return 'stunned';
+    if (this.isHit) return 'hit';
+    if (this.isCasting) return 'cast';
+    if (this.isDashing) return 'dash';
+    if (this.isAttacking || this.isCleaving) return 'attack';
+    if (this.isMoving) return 'walk';
+    return 'idle';
+  }
+
+  private getAnimationProgress(): number {
+    if (this.isCasting) return 1 - (this.castTimer / 500);
+    if (this.isAttacking) return 1 - (this.attackTimer / TIMING.attackSwing);
+    if (this.isDashing) return 1 - (this.dashTimer / TIMING.dashTrail);
+    if (this.isHit) return this.hitTimer / 200;
+    if (this.isMoving) return this.walkCycle;
+    return (this.animationTime % 2000) / 2000; // Idle breathing
   }
 
   // Obter dano de ataque melee (usa arma equipada)

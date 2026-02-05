@@ -3,6 +3,7 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { registerGameHandlers, getOnlineCount } from './socket/game.handler.js';
 import { GameService } from './services/game.service.js';
 import authRoutes from './routes/auth.routes.js';
@@ -23,6 +24,7 @@ app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:5174',
   credentials: true,
 }));
+app.use(cookieParser());
 app.use(express.json());
 
 // Health check

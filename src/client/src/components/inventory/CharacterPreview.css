@@ -1,0 +1,156 @@
+/* Character Preview */
+.character-preview {
+  background: linear-gradient(145deg, #1a1a2e 0%, #0d0d1a 100%);
+  border: 2px solid #c8aa6e;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.character-preview__canvas-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+
+.character-preview__canvas {
+  display: block;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #1a1a2e 0%, #0a0a15 100%);
+}
+
+.character-preview__state-indicator {
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: #c8aa6e;
+  padding: 4px 12px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.character-preview__info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.character-preview__weapon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(200, 170, 110, 0.1);
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(200, 170, 110, 0.3);
+}
+
+.character-preview__weapon-icon {
+  font-size: 1.2rem;
+}
+
+.character-preview__weapon-name {
+  color: #c8aa6e;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.character-preview__passive {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(100, 100, 255, 0.1);
+  padding: 4px 12px;
+  border-radius: 15px;
+  border: 1px solid rgba(100, 100, 255, 0.3);
+}
+
+.character-preview__passive-icon {
+  font-size: 1rem;
+}
+
+.character-preview__passive-name {
+  color: #aaaaff;
+  font-weight: 500;
+  font-size: 0.8rem;
+}
+
+.character-preview__abilities {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.character-preview__ability {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.character-preview__ability-key {
+  font-size: 0.7rem;
+  color: #666;
+  font-weight: 600;
+}
+
+.character-preview__ability-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(200, 170, 110, 0.3);
+  border-radius: 8px;
+  font-size: 1.3rem;
+  transition: all 0.2s;
+}
+
+.character-preview__ability:hover .character-preview__ability-icon {
+  border-color: #c8aa6e;
+  background: rgba(200, 170, 110, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Animation for the canvas glow */
+@keyframes previewPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(200, 170, 110, 0.2); }
+  50% { box-shadow: 0 0 35px rgba(200, 170, 110, 0.4); }
+}
+
+.character-preview__canvas {
+  animation: previewPulse 3s ease-in-out infinite;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .character-preview {
+    padding: 15px;
+  }
+
+  .character-preview__canvas-container {
+    width: 160px;
+    height: 160px;
+  }
+
+  .character-preview__canvas {
+    width: 160px;
+    height: 160px;
+  }
+
+  .character-preview__ability-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
+  }
+}

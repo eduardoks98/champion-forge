@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5174,
-    allowedHosts: ['champion.mysys.local', 'localhost'],
+    allowedHosts: ['champion.mysys.net', 'localhost'],
     proxy: {
       // Proxy API calls to Champion Forge server (Node)
       '/api': {

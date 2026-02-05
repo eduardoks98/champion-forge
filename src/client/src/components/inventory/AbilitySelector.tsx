@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useCharacter } from '../../context/CharacterContext';
 import {
   getAllAbilities,
@@ -25,6 +25,19 @@ const ABILITY_TYPES: { type: AbilityType; label: string; color: string }[] = [
   { type: 'ultimate', label: 'Ultimate', color: '#c8aa6e' },
 ];
 
+// Cores por categoria de habilidade (para borda visual)
+const CATEGORY_COLORS: Record<string, string> = {
+  physical_melee: '#ff6b35',
+  physical_ranged: '#4ecdc4',
+  magic_fire: '#ff4757',
+  magic_ice: '#70a1ff',
+  magic_lightning: '#ffa502',
+  healing: '#2ed573',
+  defense: '#747d8c',
+  stealth: '#a55eea',
+  universal: '#c8aa6e',
+};
+
 export default function AbilitySelector({
   currentAbilityId,
   slot,
@@ -34,6 +47,7 @@ export default function AbilitySelector({
   const { unlockedAbilities, isAbilityEquipped } = useCharacter();
   const [filter, setFilter] = useState<AbilityType | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectingId, setSelectingId] = useState<string | null>(null);
 
   // Filtrar habilidades
   const getFilteredAbilities = (): AbilityDefinition[] => {
@@ -61,35 +75,67 @@ export default function AbilitySelector({
 
   const filteredAbilities = getFilteredAbilities();
 
+  // Handler de seleção com animação
+  const handleSelect = useCallback((abilityId: string) => {
+    setSelectingId(abilityId);
+    // Aguarda a animação antes de fechar
+    setTimeout(() => {
+      onSelect(abilityId);
+    }, 400);
+  }, [onSelect]);
+
   // Renderizar card de habilidade
-  const renderAbilityCard = (ability: AbilityDefinition) => {
+  const renderAbilityCard = (ability: AbilityDefinition, index: number) => {
     const isUnlocked = unlockedAbilities.includes(ability.id);
     const isCurrent = ability.id === currentAbilityId;
     const equippedSlot = isAbilityEquipped(ability.id);
     const isEquippedElsewhere = equippedSlot && equippedSlot !== slot;
+    const isSelecting = selectingId === ability.id;
 
     const typeInfo = ABILITY_TYPES.find((t) => t.type === ability.type);
+    const categoryColor = CATEGORY_COLORS[ability.category] || CATEGORY_COLORS.universal;
 
     return (
       <div
         key={ability.id}
-        className={`ability-selector__card ${!isUnlocked ? 'ability-selector__card--locked' : ''} ${isCurrent ? 'ability-selector__card--current' : ''} ${isEquippedElsewhere ? 'ability-selector__card--equipped' : ''}`}
-        onClick={() => isUnlocked && !isEquippedElsewhere && onSelect(ability.id)}
+        className={`ability-selector__card ${!isUnlocked ? 'ability-selector__card--locked' : ''} ${isCurrent ? 'ability-selector__card--current' : ''} ${isEquippedElsewhere ? 'ability-selector__card--equipped' : ''} ${isSelecting ? 'ability-selector__card--selecting' : ''}`}
+        onClick={() => isUnlocked && !isEquippedElsewhere && !selectingId && handleSelect(ability.id)}
+        style={{
+          animationDelay: `${index * 30}ms`,
+          borderLeftColor: isUnlocked ? categoryColor : undefined,
+          borderLeftWidth: isUnlocked ? '3px' : undefined,
+        }}
       >
-        <div className="ability-selector__card-icon">{ability.icon}</div>
+        <div
+          className="ability-selector__card-icon"
+          style={{
+            boxShadow: isSelecting ? `0 0 20px ${typeInfo?.color || '#c8aa6e'}` : undefined
+          }}
+        >
+          {ability.icon}
+        </div>
         <div className="ability-selector__card-info">
           <div className="ability-selector__card-name">{ability.name}</div>
-          <div
-            className="ability-selector__card-type"
-            style={{ color: typeInfo?.color }}
-          >
-            {typeInfo?.label}
+          <div className="ability-selector__card-meta">
+            <span
+              className="ability-selector__card-type"
+              style={{ color: typeInfo?.color }}
+            >
+              {typeInfo?.label}
+            </span>
+            <span
+              className="ability-selector__card-category"
+              style={{ color: categoryColor }}
+            >
+              {ability.category.replace('_', ' ')}
+            </span>
           </div>
           <div className="ability-selector__card-desc">{ability.description}</div>
           <div className="ability-selector__card-stats">
             <span>CD: {(ability.cooldown / 1000).toFixed(1)}s</span>
             {ability.damage && <span>Dano: {ability.damage}</span>}
             {ability.range && <span>Range: {ability.range}px</span>}
+            {ability.manaCost && <span>Mana: {ability.manaCost}</span>}
           </div>
         </div>
         {!isUnlocked && (
@@ -101,6 +147,11 @@ export default function AbilitySelector({
         {isEquippedElsewhere && (
           <div className="ability-selector__card-badge ability-selector__card-badge--equipped">
             Em {equippedSlot}
+          </div>
+        )}
+        {isSelecting && (
+          <div className="ability-selector__card-selecting-overlay">
+            <span>Equipando...</span>
           </div>
         )}
       </div>
@@ -159,7 +210,7 @@ export default function AbilitySelector({
 
         {/* Grid */}
         <div className="ability-selector__grid">
-          {filteredAbilities.map(renderAbilityCard)}
+          {filteredAbilities.map((ability, index) => renderAbilityCard(ability, index))}
         </div>
 
         {/* Footer */}

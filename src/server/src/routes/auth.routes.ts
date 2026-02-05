@@ -3,16 +3,34 @@ import { authService } from '../services/auth.service.js';
 
 const router = Router();
 
+/**
+ * Extract token from request (Bearer header or httpOnly cookie)
+ */
+function extractToken(req: Request): string | null {
+  // Try Bearer token first (for API clients)
+  const authHeader = req.headers.authorization;
+  if (authHeader?.startsWith('Bearer ')) {
+    return authHeader.split(' ')[1];
+  }
+
+  // Fallback: httpOnly cookie (for browser with credentials: 'include')
+  const cookieToken = req.cookies?.mysys_token;
+  if (cookieToken) {
+    return cookieToken;
+  }
+
+  return null;
+}
+
 // Get current user
 router.get('/me', async (req: Request, res: Response) => {
   try {
-    const authHeader = req.headers.authorization;
+    const token = extractToken(req);
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!token) {
       return res.status(401).json({ error: 'Token não fornecido' });
     }
 
-    const token = authHeader.split(' ')[1];
     const user = await authService.validateToken(token);
 
     if (!user) {
@@ -29,9 +47,8 @@ router.get('/me', async (req: Request, res: Response) => {
 // Logout - CRITICAL: Must call MySys API to trigger broadcast to other games
 router.post('/logout', async (req: Request, res: Response) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (authHeader?.startsWith('Bearer ')) {
-      const token = authHeader.split(' ')[1];
+    const token = extractToken(req);
+    if (token) {
 
       // CRITICAL: Call MySys API to trigger AuthSyncEvent broadcast
       // This notifies all other games (Bangshot, Portal, etc.) that user logged out
