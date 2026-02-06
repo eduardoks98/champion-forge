@@ -54,18 +54,23 @@ export class StatusEffectSystem {
   }
 
   // Update all effects (tick down durations)
+  // OTIMIZADO: swap-and-pop in-place para evitar alocações
   update(deltaTime: number): void {
     for (const [entityId, entityEffects] of this.effects.entries()) {
-      // Update durations and filter expired effects
-      const activeEffects = entityEffects.filter(effect => {
+      // Atualizar durações e remover expirados IN-PLACE (sem criar novo array)
+      for (let i = entityEffects.length - 1; i >= 0; i--) {
+        const effect = entityEffects[i];
         effect.duration -= deltaTime;
-        return effect.duration > 0;
-      });
 
-      if (activeEffects.length === 0) {
+        if (effect.duration <= 0) {
+          // Swap-and-pop: muito mais rápido que splice/filter
+          entityEffects[i] = entityEffects[entityEffects.length - 1];
+          entityEffects.pop();
+        }
+      }
+
+      if (entityEffects.length === 0) {
         this.effects.delete(entityId);
-      } else {
-        this.effects.set(entityId, activeEffects);
       }
     }
   }

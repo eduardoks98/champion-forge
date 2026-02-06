@@ -53,12 +53,15 @@ export const TIMING = {
   enemyAttackCooldown: 1500,
 } as const;
 
-// Velocidades
+// Velocidades (pixels/frame @ 60fps)
+// NOTA: Valores reduzidos para movimento mais controlado
+// Para conversao: tiles/segundo * tileSize(64) / 60fps
 export const SPEEDS = {
-  player: 4,
-  playerDash: 15,
-  fireball: 8,
-  iceSpear: 10,
+  player: 3,        // Era 4 - reduzido para movimento mais preciso
+  playerDash: 12,   // Era 15 - ainda rapido mas mais controlavel
+  enemy: 3,         // Aumentado de 1.5 para movimento mais fluido
+  fireball: 6,      // Era 8 - projeteis um pouco mais lentos
+  iceSpear: 8,      // Era 10 - projeteis um pouco mais lentos
   particle: {
     min: 2,
     max: 5,
@@ -67,8 +70,10 @@ export const SPEEDS = {
 
 // Tamanhos
 export const SIZES = {
-  player: 60,
-  enemy: 50,
+  player: 42,        // Hitbox quadrada inscrita no círculo visual (42 ≈ 30*√2)
+  playerVisual: 60,  // Tamanho visual do círculo do player
+  enemy: 35,         // Reduzido de 50 para evitar flickering em colisões
+  minion: 30,        // Minions são menores que enemies
   projectile: 15,
   particle: {
     spark: 4,
@@ -78,9 +83,20 @@ export const SIZES = {
     width: 40,
     height: 8,
   },
+  // Mapa ARAM - Uma lane reta com bases nas pontas
   arena: {
-    width: 800,
-    height: 500,
+    width: 4000,     // Largura total do mapa
+    height: 1200,    // Altura total do mapa
+  },
+  // Layout da lane
+  lane: {
+    width: 550,      // Largura do corredor central (aumentado de 400 para mais espaço)
+    centerY: 600,    // Centro da lane (metade da altura)
+  },
+  // Bases
+  base: {
+    width: 300,
+    height: 400,
   },
 } as const;
 

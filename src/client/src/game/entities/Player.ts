@@ -3,6 +3,8 @@ import { COLORS } from '../constants/colors';
 import { SIZES, SPEEDS, TIMING, DAMAGE, RANGES, STATUS_VALUES } from '../constants/timing';
 import { getWeapon, calculateWeaponDamage, calculateAttackSpeed, DEFAULT_WEAPON, WeaponDefinition } from '../data/weapons';
 import { SpriteManager, WeaponSpriteType, AnimationEffects } from '../sprites';
+import { getGameMap } from '../world/GameMap';
+import { getPathfindingGrid, Point } from '../systems/PathfindingGrid';
 
 export interface DashGhost {
   x: number;
@@ -52,6 +54,17 @@ export class Player extends Entity {
   private weaponSwapTimer: number = 0;
   private previousWeaponType: WeaponSpriteType | null = null;
 
+  // Pathfinding - para desviar de obstáculos
+  private currentPath: Point[] | null = null;
+  private currentPathIndex: number = 0;
+  private pathBlocked: boolean = false; // Flag para indicar que não encontrou path
+  private debugPath: Point[] | null = null; // Cópia do path para debug (persiste durante navegação)
+
+  // Tamanho visual (círculo) - maior que hitbox
+  get visualSize(): number {
+    return SIZES.playerVisual;
+  }
+
   // Cooldowns
   cooldowns: {
     attack: number;
@@ -86,8 +99,9 @@ export class Player extends Entity {
       id: 'player',
       x,
       y,
-      width: SIZES.player,
-      height: SIZES.player,
+      width: SIZES.player,              // 42 - hitbox de movimento/pathfinding
+      height: SIZES.player,             // 42 - hitbox de movimento/pathfinding
+      hitRadius: SIZES.playerVisual / 2, // 30 - hitbox de combate (visual circular)
       color: COLORS.player,
       hp: 100,
       maxHp: 100,
@@ -181,6 +195,13 @@ export class Player extends Entity {
     if (this.isDashing || this.isCasting) return;
     if (!this.canMove()) return;
 
+    // Se já marcou como bloqueado, não fazer NADA - player parado
+    // Só volta a tentar quando usuário clicar em novo destino (moveTo reseta)
+    if (this.pathBlocked) {
+      this.isMoving = false;
+      return;
+    }
+
     const dx = this.targetX - this.x;
     const dy = this.targetY - this.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
@@ -189,14 +210,170 @@ export class Player extends Entity {
       this.isMoving = true;
       const speedMultiplier = this.getSpeedMultiplier();
       const actualSpeed = this.speed * speedMultiplier;
+      const gameMap = getGameMap();
+
+      // Verificar se caminho direto está bloqueado
+      const directPathBlocked = this.isPathBlocked(this.targetX, this.targetY);
+
+      if (directPathBlocked) {
+        // Tentar calcular path UMA VEZ se não tem
+        if (!this.currentPath) {
+          this.recalculatePath();
+        }
+
+        // Se tem path, seguir
+        if (this.currentPath && this.currentPath.length > 0) {
+          const waypoint = this.getNextWaypoint();
+          if (waypoint) {
+            this.moveTowardPoint(waypoint.x, waypoint.y, actualSpeed, gameMap);
+            return;
+          }
+        }
+
+        // Não tem path - marcar como bloqueado e PARAR
+        // Não vai tentar mais até usuário clicar em novo lugar
+        this.pathBlocked = true;
+        this.isMoving = false;
+        return;
+
+      } else {
+        // Caminho direto está livre - resetar flags e ir direto
+        this.currentPath = null;
+        this.debugPath = null; // Limpar debug quando não usa mais A*
+      }
+
+      // Movimento direto (só chega aqui se caminho NÃO está bloqueado)
       const moveX = (dx / dist) * actualSpeed;
       const moveY = (dy / dist) * actualSpeed;
-      this.x += moveX;
-      this.y += moveY;
+      const newCenterX = this.centerX + moveX;
+      const newCenterY = this.centerY + moveY;
+
+      // Usar colisão circular
+      const validPos = gameMap.tryMoveCircle(this.centerX, this.centerY, newCenterX, newCenterY, this.hitRadius);
+      this.x = validPos.x - this.width / 2;
+      this.y = validPos.y - this.height / 2;
+
       this.facingAngle = Math.atan2(dy, dx);
     } else {
       this.isMoving = false;
+      this.currentPath = null;
     }
+  }
+
+  /**
+   * Verifica se há obstáculo entre a posição atual e o alvo (usando colisão circular)
+   */
+  private isPathBlocked(targetX: number, targetY: number): boolean {
+    const gameMap = getGameMap();
+    const steps = 5;
+
+    for (let i = 1; i <= steps; i++) {
+      const t = i / steps;
+      const checkX = this.centerX + (targetX - this.centerX) * t;
+      const checkY = this.centerY + (targetY - this.centerY) * t;
+
+      if (!gameMap.isWalkableCircle(checkX, checkY, this.hitRadius)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Recalcula o path usando A*
+   */
+  private recalculatePath(): void {
+    const grid = getPathfindingGrid();
+    const path = grid.findPath(
+      { x: this.centerX, y: this.centerY },
+      { x: this.targetX, y: this.targetY }
+    );
+
+    if (path && path.length > 1) {
+      this.currentPath = path.slice(1);
+      this.debugPath = [...path]; // Cópia completa para debug (persiste)
+      this.currentPathIndex = 0;
+      this.pathBlocked = false;
+    } else {
+      // Não encontrou path - marcar como bloqueado para não recalcular
+      this.currentPath = null;
+      this.debugPath = null;
+      this.pathBlocked = true;
+    }
+  }
+
+  /**
+   * Retorna o próximo waypoint do path
+   */
+  private getNextWaypoint(): Point | null {
+    if (!this.currentPath || this.currentPath.length === 0) {
+      return null;
+    }
+
+    const waypoint = this.currentPath[this.currentPathIndex];
+    const distToWaypoint = Math.sqrt(
+      (this.centerX - waypoint.x) ** 2 + (this.centerY - waypoint.y) ** 2
+    );
+
+    if (distToWaypoint < 20) {
+      this.currentPathIndex++;
+      if (this.currentPathIndex >= this.currentPath.length) {
+        // Chegou no fim do path
+        this.currentPath = null;
+
+        // Verificar se o destino final está agora acessível (caminho direto livre)
+        if (!this.isPathBlocked(this.targetX, this.targetY)) {
+          // Caminho direto agora está livre - deixar o movimento direto assumir
+          this.pathBlocked = false;
+        } else {
+          // Ainda bloqueado - parar e não recalcular
+          this.pathBlocked = true;
+        }
+        return null;
+      }
+      return this.currentPath[this.currentPathIndex];
+    }
+
+    return waypoint;
+  }
+
+  /**
+   * Move em direção a um ponto específico (usando colisão circular)
+   */
+  private moveTowardPoint(targetX: number, targetY: number, speed: number, gameMap: ReturnType<typeof getGameMap>): void {
+    const dx = targetX - this.centerX;
+    const dy = targetY - this.centerY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+
+    if (dist < 1) return;
+
+    const moveX = (dx / dist) * speed;
+    const moveY = (dy / dist) * speed;
+
+    const newCenterX = this.centerX + moveX;
+    const newCenterY = this.centerY + moveY;
+
+    const validPos = gameMap.tryMoveCircle(this.centerX, this.centerY, newCenterX, newCenterY, this.hitRadius);
+    this.x = validPos.x - this.width / 2;
+    this.y = validPos.y - this.height / 2;
+
+    this.facingAngle = Math.atan2(dy, dx);
+  }
+
+  // Retorna o path atual (navegação)
+  getPath(): Point[] | null {
+    return this.currentPath;
+  }
+
+  // Retorna se o pathfinding está bloqueado (não encontrou caminho)
+  isBlocked(): boolean {
+    return this.pathBlocked;
+  }
+
+  // Retorna o path para debug (persiste durante navegação)
+  getDebugPath(): Point[] | null {
+    return this.debugPath;
   }
 
   private updateCleave(deltaTime: number): void {
@@ -263,8 +440,21 @@ export class Player extends Entity {
 
   // Mover para posição
   moveTo(x: number, y: number): void {
-    this.targetX = Math.max(0, Math.min(SIZES.arena.width - this.width, x - this.width / 2));
-    this.targetY = Math.max(0, Math.min(SIZES.arena.height - this.height, y - this.height / 2));
+    const newTargetX = Math.max(0, Math.min(SIZES.arena.width - this.width, x - this.width / 2));
+    const newTargetY = Math.max(0, Math.min(SIZES.arena.height - this.height, y - this.height / 2));
+
+    // Só resetar pathfinding se o destino MUDOU significativamente (>30px)
+    // Isso evita que updateTargetFollow() resete o pathfinding a cada frame
+    const destChanged = Math.abs(this.targetX - newTargetX) > 30 || Math.abs(this.targetY - newTargetY) > 30;
+
+    this.targetX = newTargetX;
+    this.targetY = newTargetY;
+
+    if (destChanged) {
+      this.pathBlocked = false;
+      this.currentPath = null;
+      this.debugPath = null; // Limpa debug path quando muda destino
+    }
   }
 
   // Parar movimento
@@ -501,11 +691,12 @@ export class Player extends Entity {
     }
 
     // Renderizar personagem procedural melhorado
+    // Usa visualSize (60px) para renderização, não width (42px hitbox)
     SpriteManager.renderProceduralCharacter(
       ctx,
       this.centerX,
       this.centerY,
-      this.width / 2,
+      this.visualSize / 2,
       bodyColor,
       this.facingAngle,
       visualState,

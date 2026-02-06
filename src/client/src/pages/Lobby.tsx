@@ -27,6 +27,14 @@ export default function Lobby() {
     navigate('/inventory');
   };
 
+  const handleSkeletonDemo = () => {
+    navigate('/skeleton-demo');
+  };
+
+  const handleCharacterEditor = () => {
+    navigate('/character-editor');
+  };
+
   // Loading state
   if (isLoading) {
     return (
@@ -142,6 +150,48 @@ export default function Lobby() {
               </div>
               <button className="lobby__btn lobby__btn--disabled" disabled>
                 Em Breve
+              </button>
+            </div>
+
+            {/* Skeleton Demo - Dev Tool */}
+            <div className="lobby__mode-card lobby__mode-card--dev">
+              <div className="lobby__mode-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="5" r="3" />
+                  <line x1="12" y1="8" x2="12" y2="16" />
+                  <line x1="12" y1="12" x2="8" y2="10" />
+                  <line x1="12" y1="12" x2="16" y2="10" />
+                  <line x1="12" y1="16" x2="9" y2="21" />
+                  <line x1="12" y1="16" x2="15" y2="21" />
+                </svg>
+              </div>
+              <h2>Skeleton Demo</h2>
+              <p>Teste o sistema de animacao procedural e grid isometrico.</p>
+              <div className="lobby__mode-info">
+                <span className="lobby__mode-tag lobby__mode-tag--dev">Dev</span>
+              </div>
+              <button onClick={handleSkeletonDemo} className="lobby__btn lobby__btn--dev">
+                Abrir Demo
+              </button>
+            </div>
+
+            {/* Character Editor - Dev Tool */}
+            <div className="lobby__mode-card lobby__mode-card--dev">
+              <div className="lobby__mode-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
+                  <circle cx="12" cy="10" r="3" />
+                  <path d="M12 13v4" />
+                  <path d="M9 21v-2a3 3 0 016 0v2" />
+                </svg>
+              </div>
+              <h2>Character Editor</h2>
+              <p>Crie e customize personagens, exporte sprites e animacoes.</p>
+              <div className="lobby__mode-info">
+                <span className="lobby__mode-tag lobby__mode-tag--dev">Dev</span>
+              </div>
+              <button onClick={handleCharacterEditor} className="lobby__btn lobby__btn--dev">
+                Abrir Editor
               </button>
             </div>
           </div>

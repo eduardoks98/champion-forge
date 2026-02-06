@@ -38,6 +38,11 @@ export class Vector2 {
     return this;
   }
 
+  // Alias para sub (usado em alguns contextos)
+  subtract(v: Vector2): this {
+    return this.sub(v);
+  }
+
   // Multiplicar por escalar
   scale(s: number): this {
     this.x *= s;

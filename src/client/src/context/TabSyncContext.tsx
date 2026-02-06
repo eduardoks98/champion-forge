@@ -29,6 +29,8 @@ interface TabSyncProviderProps {
   minBlurTime?: number;
   /** Se o provider está ativo (default: true) */
   enabled?: boolean;
+  /** Rotas onde o reload é desabilitado (ex: ['/game']) */
+  disabledRoutes?: string[];
 }
 
 // ==========================================
@@ -131,6 +133,7 @@ export function TabSyncProvider({
   reloadOnFocus = true,
   minBlurTime = 3000,
   enabled = true,
+  disabledRoutes = [],
 }: TabSyncProviderProps) {
   const [isFocused, setIsFocused] = useState(!document.hidden);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -170,6 +173,18 @@ export function TabSyncProvider({
         const timeAway = Date.now() - blurTimestampRef.current;
 
         if (timeAway >= minBlurTime) {
+          // Verificar se a rota atual está na lista de desabilitadas
+          const currentPath = window.location.pathname;
+          const isDisabledRoute = disabledRoutes.some(route =>
+            currentPath === route || currentPath.startsWith(route + '/')
+          );
+
+          if (isDisabledRoute) {
+            console.log(`[TabSync] Reload disabled for route: ${currentPath}`);
+            blurTimestampRef.current = null;
+            return;
+          }
+
           console.log(`[TabSync] Was away for ${timeAway}ms, reloading...`);
           setIsSyncing(true);
 
@@ -194,7 +209,7 @@ export function TabSyncProvider({
 
       blurTimestampRef.current = null;
     }
-  }, [enabled, minBlurTime, reloadOnFocus, clearTimeouts]);
+  }, [enabled, minBlurTime, reloadOnFocus, clearTimeouts, disabledRoutes]);
 
   useEffect(() => {
     if (!enabled) return;

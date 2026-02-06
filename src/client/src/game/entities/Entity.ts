@@ -1,4 +1,3 @@
-import { COLORS } from '../constants/colors';
 import { StatusEffectSystem, StatusEffectType } from '../systems/StatusEffectSystem';
 
 export interface Vector2 {
@@ -15,6 +14,7 @@ export interface EntityOptions {
   color: string;
   hp?: number;
   maxHp?: number;
+  hitRadius?: number; // Raio para colisão de hits (circular)
 }
 
 export abstract class Entity {
@@ -26,6 +26,9 @@ export abstract class Entity {
   color: string;
   hp: number;
   maxHp: number;
+
+  // Raio para colisão de hits (circular) - usado para combate
+  hitRadius: number;
 
   // Animation state
   isHit: boolean = false;
@@ -46,6 +49,8 @@ export abstract class Entity {
     this.color = options.color;
     this.maxHp = options.maxHp ?? 100;
     this.hp = options.hp ?? this.maxHp;
+    // hitRadius padrão = metade do menor lado (aproximação circular)
+    this.hitRadius = options.hitRadius ?? Math.min(options.width, options.height) / 2;
   }
 
   abstract update(deltaTime: number): void;
@@ -108,36 +113,72 @@ export abstract class Entity {
     }
   }
 
-  // Renderizar barra de vida
+  // Renderizar barra de vida - Estilo LoL (fina, sutil)
   protected renderHealthBar(ctx: CanvasRenderingContext2D): void {
-    const barWidth = this.width;
-    const barHeight = 6;
-    const barX = this.x;
-    const barY = this.y - 12;
+    const barWidth = this.width * 1.2; // Um pouco maior que a entidade
+    const barHeight = 4; // Mais fina
+    const barX = this.centerX - barWidth / 2;
+    const barY = this.y - 8;
 
-    // Background
-    ctx.fillStyle = COLORS.healthBar;
+    // Fundo escuro semi-transparente
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
     ctx.fillRect(barX, barY, barWidth, barHeight);
 
-    // Health fill
+    // Cor da vida baseada na porcentagem
     const healthPercent = this.hp / this.maxHp;
-    const gradient = ctx.createLinearGradient(barX, barY, barX + barWidth, barY);
-    gradient.addColorStop(0, COLORS.healthFill[0]);
-    gradient.addColorStop(1, COLORS.healthFill[1]);
-    ctx.fillStyle = gradient;
+    let fillColor: string;
+
+    if (healthPercent > 0.6) {
+      // Verde - vida alta
+      fillColor = '#2ecc71';
+    } else if (healthPercent > 0.3) {
+      // Amarelo - vida média
+      fillColor = '#f1c40f';
+    } else {
+      // Vermelho - vida baixa
+      fillColor = '#e74c3c';
+    }
+
+    // Vida atual
+    ctx.fillStyle = fillColor;
     ctx.fillRect(barX, barY, barWidth * healthPercent, barHeight);
 
-    // Border
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    // Borda fina e sutil
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
     ctx.lineWidth = 1;
     ctx.strokeRect(barX, barY, barWidth, barHeight);
+
+    // Pequenas divisões (estilo LoL - cada divisão = 10% da vida)
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.4)';
+    ctx.lineWidth = 0.5;
+    for (let i = 1; i < 10; i++) {
+      const divX = barX + (barWidth * i) / 10;
+      ctx.beginPath();
+      ctx.moveTo(divX, barY);
+      ctx.lineTo(divX, barY + barHeight);
+      ctx.stroke();
+    }
   }
 
-  // Checar colisão circular
+  // Checar colisão circular (usa hitRadius)
   collidesWith(other: Entity): boolean {
     const dist = this.distanceTo(other);
-    const minDist = (this.width + other.width) / 2;
-    return dist < minDist;
+    return dist < (this.hitRadius + other.hitRadius);
+  }
+
+  // Colisão circular para hits/combate
+  circleCollidesWith(other: Entity): boolean {
+    const dx = this.centerX - other.centerX;
+    const dy = this.centerY - other.centerY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    return dist < (this.hitRadius + other.hitRadius);
+  }
+
+  // Verificar se ponto está dentro do raio de hit
+  isPointInHitRadius(x: number, y: number): boolean {
+    const dx = this.centerX - x;
+    const dy = this.centerY - y;
+    return Math.sqrt(dx * dx + dy * dy) < this.hitRadius;
   }
 
   // Verificar se está fora dos limites
@@ -193,39 +234,45 @@ export abstract class Entity {
     return amount;
   }
 
-  // Render shield bar if has shield
+  // Render shield bar if has shield - Estilo LoL
   protected renderShieldBar(ctx: CanvasRenderingContext2D): void {
     const shieldAmount = this.getShieldAmount();
     if (shieldAmount <= 0) return;
 
-    const barWidth = this.width;
-    const barHeight = 4;
-    const barX = this.x;
-    const barY = this.y - 18; // Above health bar
+    const barWidth = this.width * 1.2;
+    const barHeight = 3; // Mais fina que a barra de vida
+    const barX = this.centerX - barWidth / 2;
+    const barY = this.y - 13; // Acima da barra de vida
 
-    // Shield bar (blue/cyan)
+    // Shield bar (branco/ciano - estilo LoL)
     const shieldPercent = Math.min(1, shieldAmount / this.maxHp);
-    ctx.fillStyle = 'rgba(0, 200, 255, 0.8)';
+
+    // Fundo sutil
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
     ctx.fillRect(barX, barY, barWidth * shieldPercent, barHeight);
 
-    // Border
-    ctx.strokeStyle = 'rgba(100, 220, 255, 0.5)';
+    // Shield fill (branco com brilho ciano)
+    ctx.fillStyle = 'rgba(200, 230, 255, 0.9)';
+    ctx.fillRect(barX, barY, barWidth * shieldPercent, barHeight);
+
+    // Borda ciano sutil
+    ctx.strokeStyle = 'rgba(100, 200, 255, 0.6)';
     ctx.lineWidth = 1;
     ctx.strokeRect(barX, barY, barWidth * shieldPercent, barHeight);
   }
 
-  // Render status effect indicators
+  // Render status effect indicators - Estilo LoL
   protected renderStatusIndicators(ctx: CanvasRenderingContext2D): void {
     if (!this.statusEffectSystem) return;
 
     const effects = this.statusEffectSystem.getEffects(this.id);
     if (effects.length === 0) return;
 
-    // Render icons above entity
+    // Render icons above entity (ajustado para novas barras)
     let offsetX = 0;
-    const iconSize = 12;
+    const iconSize = 10; // Menor para ser mais sutil
     const startX = this.centerX - (effects.length * iconSize) / 2;
-    const y = this.y - 26;
+    const y = this.y - 18; // Acima das barras
 
     for (const effect of effects) {
       let color = '';

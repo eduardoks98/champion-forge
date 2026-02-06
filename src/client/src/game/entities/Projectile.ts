@@ -134,12 +134,17 @@ export class Projectile extends Entity {
     }
 
     ctx.fillStyle = gradient;
-    ctx.shadowColor = this.color;
-    ctx.shadowBlur = 15;
+    // OTIMIZAÇÃO: shadowBlur removido - muito pesado
+    // Usar outline ao invés de glow
 
     ctx.beginPath();
     ctx.arc(centerX, centerY, (this.width / 2) * pulseScale, 0, Math.PI * 2);
     ctx.fill();
+
+    // Outline colorido ao invés de glow
+    ctx.strokeStyle = this.color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
 
     ctx.restore();
   }

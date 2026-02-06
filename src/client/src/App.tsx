@@ -11,12 +11,14 @@ import Leaderboard from './pages/Leaderboard';
 import Inventory from './pages/Inventory';
 import AuthCallback from './pages/AuthCallback';
 import Preview from './pages/Preview/Preview';
+import SkeletonDemo from './pages/SkeletonDemo';
+import CharacterEditor from './pages/CharacterEditor';
 
 // Rotas que precisam de auth e tab sync
 function AuthenticatedRoutes() {
   return (
     <AuthProvider>
-      <TabSyncProvider>
+      <TabSyncProvider disabledRoutes={['/game']}>
         <SocketProvider>
           <CharacterProvider>
             <Routes>
@@ -41,6 +43,10 @@ function App() {
       <Routes>
         {/* Preview NÃO precisa de auth nem tab sync - é só visual para iframe */}
         <Route path="/preview" element={<Preview />} />
+        {/* Demo do skeleton e grid - também não precisa de auth */}
+        <Route path="/skeleton-demo" element={<SkeletonDemo />} />
+        {/* Editor de personagens - não precisa de auth */}
+        <Route path="/character-editor" element={<CharacterEditor />} />
         {/* Todas outras rotas passam pelos providers */}
         <Route path="/*" element={<AuthenticatedRoutes />} />
       </Routes>

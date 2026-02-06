@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { GameEngine, GameStats } from '../game/engine/GameEngine';
-import { SIZES } from '../game/constants/timing';
 import { Loadout, DEFAULT_LOADOUT } from '../game/data/loadout';
 import AbilityBar from './game/AbilityBar';
+import './GameCanvas.css';
 
 interface Props {
   onStatsUpdate?: (stats: GameStats) => void;
@@ -17,6 +17,7 @@ interface PlayerState {
 
 export default function GameCanvas({ onStatsUpdate }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<GameEngine | null>(null);
   const [playerState, setPlayerState] = useState<PlayerState>({
     cooldowns: {},
@@ -25,9 +26,30 @@ export default function GameCanvas({ onStatsUpdate }: Props) {
     maxCooldowns: {},
   });
 
+  // Resize handler
+  const handleResize = useCallback(() => {
+    const canvas = canvasRef.current;
+    const engine = engineRef.current;
+    if (!canvas || !engine) return;
+
+    // Fullscreen dimensions
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    canvas.width = width;
+    canvas.height = height;
+
+    // Notificar engine sobre resize
+    engine.handleResize(width, height);
+  }, []);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    // Set initial fullscreen size
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
     // Criar engine
     const engine = new GameEngine(canvas);
@@ -47,10 +69,14 @@ export default function GameCanvas({ onStatsUpdate }: Props) {
     // Iniciar
     engine.start();
 
+    // Add resize listener
+    window.addEventListener('resize', handleResize);
+
     return () => {
       engine.stop();
+      window.removeEventListener('resize', handleResize);
     };
-  }, [onStatsUpdate]);
+  }, [onStatsUpdate, handleResize]);
 
   const handleReset = () => {
     engineRef.current?.reset();
@@ -61,49 +87,34 @@ export default function GameCanvas({ onStatsUpdate }: Props) {
   };
 
   return (
-    <div className="game-canvas-container">
-      {/* Canvas principal */}
+    <div ref={containerRef} className="game-fullscreen-container">
+      {/* Canvas fullscreen */}
       <canvas
         ref={canvasRef}
-        width={SIZES.arena.width}
-        height={SIZES.arena.height}
-        style={{
-          border: '4px solid #4a4a6a',
-          borderRadius: '10px',
-          background: '#1a1a2e',
-          cursor: 'crosshair',
-        }}
+        className="game-canvas-fullscreen"
       />
 
-      {/* Nova AbilityBar estilo LoL */}
-      <AbilityBar
-        loadout={playerState.loadout}
-        cooldowns={playerState.cooldowns}
-        maxCooldowns={playerState.maxCooldowns}
-        currentHp={playerState.hp.current}
-        maxHp={playerState.hp.max}
-      />
+      {/* HUD Overlay */}
+      <div className="game-hud-overlay">
+        {/* AbilityBar na parte inferior */}
+        <AbilityBar
+          loadout={playerState.loadout}
+          cooldowns={playerState.cooldowns}
+          maxCooldowns={playerState.maxCooldowns}
+          currentHp={playerState.hp.current}
+          maxHp={playerState.hp.max}
+        />
 
-      {/* Controles */}
-      <div className="controls">
-        <button onClick={handleSpawnEnemy}>Spawn Enemy (T)</button>
-        <button onClick={handleReset}>Reset</button>
-      </div>
+        {/* Controles no canto superior direito */}
+        <div className="game-controls-overlay">
+          <button onClick={handleSpawnEnemy}>Spawn (T)</button>
+          <button onClick={handleReset}>Reset</button>
+        </div>
 
-      {/* Instruções */}
-      <div className="instructions">
-        <h3>Controles (LoL Style)</h3>
-        <ul>
-          <li><strong>Click Direito no chao:</strong> Mover</li>
-          <li><strong>Click Direito no inimigo:</strong> Seguir + Auto-Attack</li>
-          <li><strong>Q:</strong> Fireball (direcao do mouse)</li>
-          <li><strong>W:</strong> Ice Spear (atravessa inimigos)</li>
-          <li><strong>E:</strong> Lightning (requer alvo)</li>
-          <li><strong>R:</strong> Meteor (area com delay)</li>
-          <li><strong>D:</strong> Dash (direcao do mouse)</li>
-          <li><strong>F:</strong> Heal (auto-cura)</li>
-          <li><strong>T:</strong> Spawn inimigo</li>
-        </ul>
+        {/* Mini instruções no canto inferior esquerdo */}
+        <div className="game-instructions-mini">
+          <p><strong>RMB:</strong> Move/Attack | <strong>QWER:</strong> Abilities | <strong>DF:</strong> Spells | <strong>F3:</strong> Debug</p>
+        </div>
       </div>
     </div>
   );

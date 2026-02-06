@@ -1,114 +1,128 @@
+// ==========================================
+// DAMAGE NUMBER SYSTEM (OTIMIZADO COM OBJECT POOL)
+// ==========================================
+
 import { COLORS } from '../constants/colors';
 import { TIMING } from '../constants/timing';
+import { getDamageNumberPool, PoolableDamageNumber } from './ObjectPool';
 
 export type DamageType = 'physical' | 'magic' | 'crit' | 'heal' | 'shield';
 
-interface DamageNumber {
-  x: number;
-  y: number;
-  amount: number;
-  type: DamageType;
-  life: number;
-  maxLife: number;
-}
+// Limite de números de dano visíveis (evita lag com 500+ hits)
+const MAX_VISIBLE_DAMAGE_NUMBERS = 30;
 
 export class DamageNumberSystem {
-  private numbers: DamageNumber[] = [];
+  private pool = getDamageNumberPool();
 
-  // Mostrar número de dano
+  // Mostrar número de dano usando pool
   show(x: number, y: number, amount: number, type: DamageType): void {
-    this.numbers.push({
-      x: x + (Math.random() - 0.5) * 20,
-      y,
-      amount,
-      type,
-      life: TIMING.damageFloat,
-      maxLife: TIMING.damageFloat,
-    });
+    // OTIMIZAÇÃO: Skip se já tem muitos números
+    if (this.pool.getActiveCount() >= MAX_VISIBLE_DAMAGE_NUMBERS) {
+      return;
+    }
+
+    const num = this.pool.acquire();
+    if (!num) return; // Pool cheio
+
+    num.x = x + (Math.random() - 0.5) * 20;
+    num.y = y;
+    num.value = amount;
+    num.life = TIMING.damageFloat;
+    num.maxLife = TIMING.damageFloat;
+    num.vy = -1;
+
+    // Configurar baseado no tipo
+    switch (type) {
+      case 'physical':
+        num.color = COLORS.damagePhysical;
+        num.isCrit = false;
+        num.scale = 1;
+        break;
+      case 'magic':
+        num.color = COLORS.damageMagic;
+        num.isCrit = false;
+        num.scale = 1;
+        break;
+      case 'crit':
+        num.color = COLORS.damageCrit;
+        num.isCrit = true;
+        num.scale = 1.3;
+        break;
+      case 'heal':
+        num.color = COLORS.damageHeal;
+        num.isCrit = false;
+        num.scale = 1;
+        break;
+      case 'shield':
+        num.color = '#00ccff';
+        num.isCrit = false;
+        num.scale = 1;
+        break;
+    }
   }
 
   // Atualizar
   update(deltaTime: number): void {
-    for (let i = this.numbers.length - 1; i >= 0; i--) {
-      const num = this.numbers[i];
+    const toRelease: PoolableDamageNumber[] = [];
+
+    this.pool.forEach((num) => {
       num.life -= deltaTime;
-      num.y -= 1; // Flutuar para cima
+      num.y += num.vy; // Flutuar para cima
 
       if (num.life <= 0) {
-        this.numbers.splice(i, 1);
+        toRelease.push(num);
       }
+    });
+
+    // Liberar de volta ao pool
+    for (const num of toRelease) {
+      this.pool.release(num);
     }
   }
 
-  // Renderizar
+  // Renderizar - OTIMIZADO (sem shadowBlur)
   render(ctx: CanvasRenderingContext2D): void {
-    for (const num of this.numbers) {
+    ctx.save();
+    ctx.textAlign = 'center';
+
+    this.pool.forEach((num) => {
       const progress = num.life / num.maxLife;
       const alpha = progress;
-      const scale = 0.8 + (1 - progress) * 0.4; // Cresce um pouco
+      const scale = 0.8 + (1 - progress) * 0.4;
 
-      ctx.save();
       ctx.globalAlpha = alpha;
-      ctx.translate(num.x, num.y);
-      ctx.scale(scale, scale);
 
-      // Cor baseada no tipo
-      let color: string;
-      let fontSize = 18;
-      let prefix = '-';
+      // Texto com outline ao invés de shadow (mais performático)
+      const fontSize = num.isCrit ? 24 : 18;
+      ctx.font = `bold ${fontSize * scale}px Arial`;
 
-      switch (num.type) {
-        case 'physical':
-          color = COLORS.damagePhysical;
-          break;
-        case 'magic':
-          color = COLORS.damageMagic;
-          break;
-        case 'crit':
-          color = COLORS.damageCrit;
-          fontSize = 24;
-          break;
-        case 'heal':
-          color = COLORS.damageHeal;
-          prefix = '+';
-          break;
-        case 'shield':
-          color = '#00ccff';
-          prefix = '';
-          break;
-      }
+      // Outline preto (mais leve que shadowBlur)
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 3;
+      ctx.strokeText(`${num.isCrit ? '' : '-'}${num.value}`, num.x, num.y);
 
-      // Sombra
-      ctx.shadowColor = 'black';
-      ctx.shadowBlur = 3;
-      ctx.shadowOffsetX = 1;
-      ctx.shadowOffsetY = 1;
-
-      // Texto
-      ctx.font = `bold ${fontSize}px Arial`;
-      ctx.fillStyle = color;
-      ctx.textAlign = 'center';
-      ctx.fillText(`${prefix}${num.amount}`, 0, 0);
+      // Texto colorido
+      ctx.fillStyle = num.color;
+      ctx.fillText(`${num.isCrit ? '' : '-'}${num.value}`, num.x, num.y);
 
       // CRIT! text
-      if (num.type === 'crit') {
-        ctx.font = 'bold 12px Arial';
-        ctx.fillText('CRIT!', 0, -20);
+      if (num.isCrit) {
+        ctx.font = `bold ${12 * scale}px Arial`;
+        ctx.strokeText('CRIT!', num.x, num.y - 20);
+        ctx.fillText('CRIT!', num.x, num.y - 20);
       }
+    });
 
-      // BLOCKED text for shield
-      if (num.type === 'shield') {
-        ctx.font = 'bold 14px Arial';
-        ctx.fillStyle = '#00ccff';
-        ctx.fillText('BLOCKED', 0, 0);
-      }
-
-      ctx.restore();
-    }
+    ctx.restore();
   }
 
   // Limpar
   clear(): void {
-    this.numbers = [];
+    this.pool.releaseAll();
+  }
+
+  // Contagem de números ativos
+  get count(): number {
+    return this.pool.getActiveCount();
   }
 }

@@ -97,7 +97,9 @@ export class EffectSystem {
       effect.radius = effect.maxRadius * progress;
 
       if (effect.life <= 0) {
-        this.effects.splice(i, 1);
+        // SWAP-AND-POP ao invés de splice
+        this.effects[i] = this.effects[this.effects.length - 1];
+        this.effects.pop();
       }
     }
   }
@@ -146,39 +148,32 @@ export class EffectSystem {
     ctx.fill();
   }
 
+  // OTIMIZADO: Sem gradientes, usando cores sólidas
   private renderLightning(ctx: CanvasRenderingContext2D, effect: Effect): void {
     const progress = 1 - (effect.life / effect.maxLife);
 
-    // Flash central
-    const gradient = ctx.createRadialGradient(
-      effect.x, effect.y, 0,
-      effect.x, effect.y, effect.radius
-    );
-    gradient.addColorStop(0, 'rgba(255, 255, 255, ' + (1 - progress) + ')');
-    gradient.addColorStop(0.3, 'rgba(255, 255, 0, ' + (0.5 - progress * 0.5) + ')');
-    gradient.addColorStop(1, 'transparent');
-
-    ctx.fillStyle = gradient;
+    // Flash central - cor sólida ao invés de gradiente
+    ctx.fillStyle = `rgba(255, 255, 200, ${0.5 * (1 - progress)})`;
     ctx.beginPath();
-    ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2);
+    ctx.arc(effect.x, effect.y, effect.radius * 0.5, 0, Math.PI * 2);
     ctx.fill();
 
-    // Raios elétricos
+    // Raios elétricos - reduzido de 6 para 4
     ctx.strokeStyle = '#ffff00';
     ctx.lineWidth = 2;
-    for (let i = 0; i < 6; i++) {
-      const angle = (Math.PI * 2 / 6) * i + Math.random() * 0.3;
+    for (let i = 0; i < 4; i++) {
+      const angle = (Math.PI * 2 / 4) * i;
       const length = effect.radius * 0.8;
 
       ctx.beginPath();
       ctx.moveTo(effect.x, effect.y);
 
-      // Linha em zigzag
-      const segments = 4;
+      // Linha em zigzag - reduzido de 4 para 2 segmentos
+      const segments = 2;
       for (let j = 1; j <= segments; j++) {
         const dist = (length / segments) * j;
-        const nx = effect.x + Math.cos(angle) * dist + (Math.random() - 0.5) * 15;
-        const ny = effect.y + Math.sin(angle) * dist + (Math.random() - 0.5) * 15;
+        const nx = effect.x + Math.cos(angle) * dist + (Math.random() - 0.5) * 10;
+        const ny = effect.y + Math.sin(angle) * dist + (Math.random() - 0.5) * 10;
         ctx.lineTo(nx, ny);
       }
 
@@ -213,10 +208,9 @@ export class EffectSystem {
     }
   }
 
+  // OTIMIZADO: Sem gradientes, sem cristais
   private renderFrostNova(ctx: CanvasRenderingContext2D, effect: Effect): void {
     const progress = 1 - (effect.life / effect.maxLife);
-
-    // Expanding ice circle
     const currentRadius = effect.maxRadius * progress;
 
     // Outer ring
@@ -226,36 +220,11 @@ export class EffectSystem {
     ctx.arc(effect.x, effect.y, currentRadius, 0, Math.PI * 2);
     ctx.stroke();
 
-    // Inner fill with gradient
-    const gradient = ctx.createRadialGradient(
-      effect.x, effect.y, 0,
-      effect.x, effect.y, currentRadius
-    );
-    gradient.addColorStop(0, 'rgba(136, 221, 255, 0.4)');
-    gradient.addColorStop(0.7, 'rgba(136, 221, 255, 0.2)');
-    gradient.addColorStop(1, 'rgba(136, 221, 255, 0)');
-
-    ctx.fillStyle = gradient;
+    // Inner fill - cor sólida ao invés de gradiente
+    ctx.fillStyle = 'rgba(136, 221, 255, 0.2)';
     ctx.beginPath();
     ctx.arc(effect.x, effect.y, currentRadius, 0, Math.PI * 2);
     ctx.fill();
-
-    // Ice crystal decorations around the edge
-    const crystalCount = 8;
-    for (let i = 0; i < crystalCount; i++) {
-      const angle = (Math.PI * 2 / crystalCount) * i + progress * Math.PI;
-      const cx = effect.x + Math.cos(angle) * currentRadius;
-      const cy = effect.y + Math.sin(angle) * currentRadius;
-
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.moveTo(cx, cy - 8);
-      ctx.lineTo(cx + 4, cy);
-      ctx.lineTo(cx, cy + 8);
-      ctx.lineTo(cx - 4, cy);
-      ctx.closePath();
-      ctx.fill();
-    }
   }
 
   private renderMeteorWarning(ctx: CanvasRenderingContext2D, effect: Effect): void {

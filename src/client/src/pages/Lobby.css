@@ -112,6 +112,24 @@
   cursor: not-allowed;
 }
 
+.lobby__mode-card--dev {
+  border-color: rgba(138, 43, 226, 0.3);
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(20, 20, 20, 0.9) 100%);
+}
+
+.lobby__mode-card--dev:hover {
+  border-color: #a855f7;
+  box-shadow: 0 10px 30px rgba(138, 43, 226, 0.15);
+}
+
+.lobby__mode-card--dev .lobby__mode-icon {
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.2) 0%, rgba(138, 43, 226, 0.05) 100%);
+}
+
+.lobby__mode-card--dev .lobby__mode-icon svg {
+  stroke: #a855f7;
+}
+
 .lobby__mode-icon {
   width: 64px;
   height: 64px;
@@ -188,6 +206,16 @@
   color: #d4a418;
 }
 
+.lobby__mode-tag--dev {
+  background: rgba(138, 43, 226, 0.2);
+  color: #a855f7;
+}
+
+.lobby__mode-tag--dev {
+  background: rgba(138, 43, 226, 0.2);
+  color: #a855f7;
+}
+
 /* Buttons */
 .lobby__btn {
   width: 100%;
@@ -226,6 +254,17 @@
   background: #2a2a2a;
   color: #666;
   cursor: not-allowed;
+}
+
+.lobby__btn--dev {
+  background: transparent;
+  color: #a855f7;
+  border: 2px solid #a855f7;
+}
+
+.lobby__btn--dev:hover {
+  background: rgba(138, 43, 226, 0.1);
+  transform: translateY(-2px);
 }
 
 /* User Stats */
