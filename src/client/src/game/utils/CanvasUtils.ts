@@ -3,6 +3,8 @@
  * Reutilizável para qualquer entidade/efeito
  */
 
+import { DEFAULT_CANVAS } from '../constants/gameDefaults';
+
 // Desenhar círculo
 export function drawCircle(
   ctx: CanvasRenderingContext2D,
@@ -21,7 +23,7 @@ export function drawCircle(
 
   if (options.glow) {
     ctx.shadowColor = options.glow;
-    ctx.shadowBlur = options.glowBlur ?? 15;
+    ctx.shadowBlur = options.glowBlur ?? DEFAULT_CANVAS.GLOW_BLUR;
   }
 
   ctx.beginPath();
@@ -34,7 +36,7 @@ export function drawCircle(
 
   if (options.stroke) {
     ctx.strokeStyle = options.stroke;
-    ctx.lineWidth = options.lineWidth ?? 2;
+    ctx.lineWidth = options.lineWidth ?? DEFAULT_CANVAS.LINE_WIDTH;
     ctx.stroke();
   }
 
@@ -61,7 +63,7 @@ export function drawRoundRect(
 
   if (options.glow) {
     ctx.shadowColor = options.glow;
-    ctx.shadowBlur = options.glowBlur ?? 15;
+    ctx.shadowBlur = options.glowBlur ?? DEFAULT_CANVAS.GLOW_BLUR;
   }
 
   ctx.beginPath();
@@ -74,7 +76,7 @@ export function drawRoundRect(
 
   if (options.stroke) {
     ctx.strokeStyle = options.stroke;
-    ctx.lineWidth = options.lineWidth ?? 2;
+    ctx.lineWidth = options.lineWidth ?? DEFAULT_CANVAS.LINE_WIDTH;
     ctx.stroke();
   }
 
@@ -99,11 +101,11 @@ export function drawLine(
 
   if (options.glow) {
     ctx.shadowColor = options.glow;
-    ctx.shadowBlur = options.glowBlur ?? 10;
+    ctx.shadowBlur = options.glowBlur ?? DEFAULT_CANVAS.LINE_GLOW_BLUR;
   }
 
   ctx.strokeStyle = options.color ?? '#fff';
-  ctx.lineWidth = options.width ?? 2;
+  ctx.lineWidth = options.width ?? DEFAULT_CANVAS.LINE_WIDTH;
   ctx.beginPath();
   ctx.moveTo(x1, y1);
   ctx.lineTo(x2, y2);
@@ -137,7 +139,7 @@ export function drawText(
 
   if (options.shadow) {
     ctx.shadowColor = options.shadowColor ?? 'black';
-    ctx.shadowBlur = options.shadowBlur ?? 3;
+    ctx.shadowBlur = options.shadowBlur ?? DEFAULT_CANVAS.SHADOW_BLUR;
     ctx.shadowOffsetX = 1;
     ctx.shadowOffsetY = 1;
   }
@@ -206,7 +208,7 @@ export function drawProgressBar(
   // Border
   if (options.borderColor) {
     ctx.strokeStyle = options.borderColor;
-    ctx.lineWidth = options.borderWidth ?? 1;
+    ctx.lineWidth = options.borderWidth ?? DEFAULT_CANVAS.BORDER_WIDTH;
     ctx.strokeRect(x, y, width, height);
   }
 
