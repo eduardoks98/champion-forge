@@ -4,6 +4,7 @@
 // ==========================================
 
 import { DEFAULT_SPATIAL } from '../constants/gameDefaults';
+import { getEntityRadius } from '../constants/SafeAccessor';
 
 /**
  * Interface para entidades que podem ser culled
@@ -81,7 +82,7 @@ export class ViewportCulling {
    */
   isVisible(entity: CullableEntity, extraMargin: number = 0): boolean {
     const totalMargin = this.margin + extraMargin;
-    const entityRadius = entity.radius ?? (Math.max(entity.width ?? 0, entity.height ?? 0) / 2 || DEFAULT_SPATIAL.ENTITY_RADIUS);
+    const entityRadius = getEntityRadius(entity, DEFAULT_SPATIAL.ENTITY_RADIUS, 'ViewportCulling.isVisible');
 
     return (
       entity.x + entityRadius > this.bounds.left - totalMargin &&

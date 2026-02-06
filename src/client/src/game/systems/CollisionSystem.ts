@@ -9,6 +9,8 @@
 // ==========================================
 
 import { SpatialGrid, SpatialEntity } from './SpatialGrid';
+import { DEFAULT_SPATIAL } from '../constants/gameDefaults';
+import { getEntityRadius, safeGet } from '../constants/SafeAccessor';
 
 /**
  * Entidade com colisão
@@ -158,10 +160,10 @@ export class CollisionSystem {
    * Verifica se duas layers podem colidir
    */
   canCollide(entityA: CollidableEntity, entityB: CollidableEntity): boolean {
-    const layerA = entityA.collisionLayer ?? CollisionLayers.ALL;
-    const maskA = entityA.collisionMask ?? CollisionLayers.ALL;
-    const layerB = entityB.collisionLayer ?? CollisionLayers.ALL;
-    const maskB = entityB.collisionMask ?? CollisionLayers.ALL;
+    const layerA = safeGet(entityA.collisionLayer, CollisionLayers.ALL, 'CollisionSystem.canCollide.layerA');
+    const maskA = safeGet(entityA.collisionMask, CollisionLayers.ALL, 'CollisionSystem.canCollide.maskA');
+    const layerB = safeGet(entityB.collisionLayer, CollisionLayers.ALL, 'CollisionSystem.canCollide.layerB');
+    const maskB = safeGet(entityB.collisionMask, CollisionLayers.ALL, 'CollisionSystem.canCollide.maskB');
 
     // A pode colidir com B se a layer de B está na mask de A
     // E B pode colidir com A se a layer de A está na mask de B
@@ -173,7 +175,7 @@ export class CollisionSystem {
    */
   findCollisions(entity: CollidableEntity): CollisionResult[] {
     const results: CollisionResult[] = [];
-    const radius = entity.radius ?? Math.max(entity.width, entity.height) / 2;
+    const radius = getEntityRadius(entity, DEFAULT_SPATIAL.COLLISION_RADIUS, 'CollisionSystem.findCollisions.entity');
 
     // Usar centro da entidade para query
     const centerX = entity.x + entity.width / 2;
@@ -186,7 +188,7 @@ export class CollisionSystem {
       if (other.id === entity.id) continue;
       if (!this.canCollide(entity, other)) continue;
 
-      const otherRadius = other.radius ?? Math.max(other.width, other.height) / 2;
+      const otherRadius = getEntityRadius(other, DEFAULT_SPATIAL.COLLISION_RADIUS, 'CollisionSystem.findCollisions.other');
       const otherCenterX = other.x + other.width / 2;
       const otherCenterY = other.y + other.height / 2;
 
@@ -326,7 +328,7 @@ export class CollisionSystem {
         if (excludeId && entity.id === excludeId) continue;
         if (entity.isTrigger) continue;
 
-        const radius = entity.radius ?? Math.max(entity.width, entity.height) / 2;
+        const radius = getEntityRadius(entity, DEFAULT_SPATIAL.COLLISION_RADIUS, 'CollisionSystem.raycast.entity');
         const centerX = entity.x + entity.width / 2;
         const centerY = entity.y + entity.height / 2;
 
@@ -355,7 +357,7 @@ export class CollisionSystem {
     ctx.save();
 
     for (const entity of entities) {
-      const radius = entity.radius ?? Math.max(entity.width, entity.height) / 2;
+      const radius = getEntityRadius(entity, DEFAULT_SPATIAL.COLLISION_RADIUS, 'CollisionSystem.debugDraw');
       const centerX = entity.x + entity.width / 2;
       const centerY = entity.y + entity.height / 2;
 

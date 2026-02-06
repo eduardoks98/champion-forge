@@ -7,6 +7,7 @@ import { Vector2 } from '../utils/Vector2';
 import { Bone } from './Bone';
 import { Skeleton } from './Skeleton';
 import { DEFAULT_ANIMATION } from '../constants/gameDefaults';
+import { safeGet } from '../constants/SafeAccessor';
 
 /**
  * Estados de animacao
@@ -76,10 +77,10 @@ export class ProceduralAnimator {
     }
 
     const defaultConfig = { speed: DEFAULT_ANIMATION.SPEED, intensity: DEFAULT_ANIMATION.INTENSITY, smoothing: DEFAULT_ANIMATION.SMOOTHING };
-    const config = this.configs.get(this.currentState) ?? defaultConfig;
-    const speed = config.speed ?? DEFAULT_ANIMATION.SPEED;
-    const intensity = config.intensity ?? DEFAULT_ANIMATION.INTENSITY;
-    const smoothing = config.smoothing ?? DEFAULT_ANIMATION.SMOOTHING;
+    const config = safeGet(this.configs.get(this.currentState), defaultConfig, `ProceduralAnimator.config.${this.currentState}`);
+    const speed = safeGet(config.speed, DEFAULT_ANIMATION.SPEED, 'ProceduralAnimator.speed');
+    const intensity = safeGet(config.intensity, DEFAULT_ANIMATION.INTENSITY, 'ProceduralAnimator.intensity');
+    const smoothing = safeGet(config.smoothing, DEFAULT_ANIMATION.SMOOTHING, 'ProceduralAnimator.smoothing');
 
     // Aplicar animacao baseada no estado
     switch (this.currentState) {

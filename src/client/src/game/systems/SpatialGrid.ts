@@ -4,6 +4,7 @@
 // ==========================================
 
 import { DEFAULT_SPATIAL } from '../constants/gameDefaults';
+import { getEntityRadius } from '../constants/SafeAccessor';
 
 /**
  * Interface para entidades que podem ser inseridas no grid
@@ -51,7 +52,7 @@ export class SpatialGrid<T extends SpatialEntity> {
    */
   private getEntityCellKeys(entity: T): string[] {
     const keys: string[] = [];
-    const radius = entity.radius ?? (Math.max(entity.width ?? 0, entity.height ?? 0) / 2 || DEFAULT_SPATIAL.ENTITY_RADIUS);
+    const radius = getEntityRadius(entity, DEFAULT_SPATIAL.ENTITY_RADIUS, 'SpatialGrid.getEntityCellKeys');
 
     // Calcula bounds da entidade
     const minX = entity.x - radius;
@@ -285,8 +286,8 @@ export class SpatialGrid<T extends SpatialEntity> {
    * Verifica colisão entre duas entidades (círculo vs círculo)
    */
   checkCollision(a: T, b: T): boolean {
-    const radiusA = a.radius ?? (Math.max(a.width ?? 0, a.height ?? 0) / 2 || DEFAULT_SPATIAL.COLLISION_RADIUS);
-    const radiusB = b.radius ?? (Math.max(b.width ?? 0, b.height ?? 0) / 2 || DEFAULT_SPATIAL.COLLISION_RADIUS);
+    const radiusA = getEntityRadius(a, DEFAULT_SPATIAL.COLLISION_RADIUS, 'SpatialGrid.checkCollision.a');
+    const radiusB = getEntityRadius(b, DEFAULT_SPATIAL.COLLISION_RADIUS, 'SpatialGrid.checkCollision.b');
     const minDist = radiusA + radiusB;
 
     const dx = a.x - b.x;
